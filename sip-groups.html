@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SIPリアルタイム監視 - グループ一覧</title>
+  <title>通話モニター - グループ一覧</title>
   <link rel="stylesheet" href="style.css">
   <style>
     /* Status Header Bar */
@@ -11,35 +11,35 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-lg);
-      padding: var(--space-md) var(--space-lg);
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
       background: var(--surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      margin-bottom: var(--space-lg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: var(--space-md);
     }
 
     .status-header-main {
       display: flex;
       align-items: center;
-      gap: var(--space-xl);
+      gap: var(--space-lg);
     }
 
     .status-metric {
       display: flex;
       align-items: baseline;
-      gap: var(--space-sm);
+      gap: var(--space-xs);
     }
 
     .status-metric-value {
-      font-size: var(--text-3xl);
-      font-weight: 900;
+      font-size: var(--text-xl);
+      font-weight: 700;
       color: var(--primary);
       line-height: 1;
     }
 
     .status-metric-label {
-      font-size: var(--text-sm);
+      font-size: var(--text-xs);
       color: var(--text-secondary);
       font-weight: 500;
     }
@@ -47,98 +47,42 @@
     .status-meta {
       display: flex;
       align-items: center;
-      gap: var(--space-lg);
+      gap: var(--space-md);
     }
 
     .status-meta-item {
       display: flex;
       align-items: center;
       gap: var(--space-xs);
-      font-size: var(--text-sm);
+      font-size: var(--text-xs);
       color: var(--text-secondary);
     }
 
     .system-status {
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
-      padding: var(--space-xs) var(--space-md);
+      gap: 4px;
+      padding: 2px 8px;
       background: var(--success-light);
       color: var(--success);
       border-radius: 999px;
-      font-weight: 700;
-      font-size: var(--text-sm);
+      font-weight: 600;
+      font-size: 10px;
     }
 
     .system-status-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       background: var(--success);
       border-radius: 50%;
       animation: pulse 2s infinite;
-    }
-
-    /* Quick Stats Grid - 2 items only */
-    .quick-stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
-    }
-
-    @media (max-width: 600px) {
-      .quick-stats {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .quick-stat {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: var(--space-lg);
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .quick-stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-
-    .quick-stat-icon.is-primary {
-      background: var(--primary-light);
-    }
-
-    .quick-stat-icon.is-success {
-      background: var(--success-light);
-    }
-
-    .quick-stat-content {
-      flex: 1;
-    }
-
-    .quick-stat-value {
-      font-size: var(--text-xl);
-      font-weight: 900;
-    }
-
-    .quick-stat-label {
-      font-size: var(--text-sm);
-      color: var(--text-secondary);
     }
 
     /* Group Grid - Card layout for 16 groups */
     .group-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-md);
+      gap: var(--space-sm);
     }
 
     @media (max-width: 1200px) {
@@ -163,54 +107,51 @@
     .group-card {
       background: var(--surface);
       border-radius: var(--radius);
-      padding: var(--space-lg);
-      box-shadow: var(--shadow-sm);
+      padding: var(--space-sm);
       cursor: pointer;
       transition: all 0.15s ease;
-      border: 2px solid transparent;
+      border: 1px solid var(--border);
     }
 
     .group-card:hover {
       border-color: var(--primary);
-      box-shadow: var(--shadow);
-      transform: translateY(-2px);
     }
 
     .group-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--space-md);
+      margin-bottom: var(--space-sm);
     }
 
     .group-card-icon {
-      width: 48px;
-      height: 48px;
+      width: 32px;
+      height: 32px;
       background: var(--primary-light);
       color: var(--primary);
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: var(--text-lg);
+      font-weight: 700;
+      font-size: var(--text-sm);
     }
 
     .group-card-name {
-      font-weight: 700;
-      font-size: var(--text-lg);
-      margin-bottom: var(--space-xs);
+      font-weight: 600;
+      font-size: var(--text-sm);
+      margin-bottom: 2px;
     }
 
     /* Status Badge */
     .group-status {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
+      gap: 4px;
+      padding: 2px 6px;
       border-radius: 999px;
-      font-size: var(--text-xs);
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 600;
     }
 
     .group-status.is-active {
@@ -219,8 +160,8 @@
     }
 
     .group-status.is-online {
-      background: var(--info-light);
-      color: var(--info);
+      background: var(--primary-light);
+      color: var(--primary);
     }
 
     .group-status.is-offline {
@@ -229,8 +170,8 @@
     }
 
     .group-status-dot {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: currentColor;
     }
@@ -243,21 +184,21 @@
     .group-card-sessions {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
-      font-size: var(--text-sm);
+      gap: var(--space-xs);
+      font-size: var(--text-xs);
       color: var(--text-secondary);
-      margin-bottom: var(--space-sm);
+      margin-bottom: var(--space-xs);
     }
 
     .group-card-sessions strong {
       color: var(--text);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     /* Progress bar */
     .session-bar {
       width: 100%;
-      height: 6px;
+      height: 4px;
       background: var(--surface-alt);
       border-radius: 999px;
       overflow: hidden;
@@ -275,7 +216,7 @@
     }
 
     .session-bar-fill.is-online {
-      background: var(--info);
+      background: var(--primary);
     }
 
     /* Click hint */
@@ -283,9 +224,9 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-top: var(--space-md);
-      font-size: var(--text-sm);
-      color: var(--text-light);
+      margin-top: var(--space-sm);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
     }
 
     .group-card:hover .group-card-footer {
@@ -309,10 +250,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item is-active">
-            SIP監視
-          </a>
-          <a href="realtime.html" class="nav-item">
-            通話状況
+            通話モニター
           </a>
           <a href="call-logs.html" class="nav-item">
             通話履歴
@@ -346,8 +284,8 @@
       <header class="main-header">
         <div class="main-header-inner">
           <div>
-            <h1 class="page-title">SIP監視</h1>
-            <p class="page-description">グループ別の接続状況を確認します</p>
+            <h1 class="page-title">通話モニター</h1>
+            <p class="page-description">グループ別のリアルタイム接続状況</p>
           </div>
           <div class="header-actions">
             <button class="btn btn-outline" onclick="location.reload()">
