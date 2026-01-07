@@ -71,165 +71,117 @@
       </header>
 
       <div class="main-content">
-        <!-- Help Alert -->
-        <div class="alert alert-info mb-lg">
-          <div class="alert-content">
-            <div class="alert-title">辞書に登録すると便利な言葉</div>
-            <p>利用者さんのお名前、薬の名前、施設内の略語など、間違いやすい言葉を登録してください。</p>
-          </div>
-        </div>
-
         <!-- Quick Add Form -->
-        <section class="card mb-lg">
-          <div class="card-header">
-            <h3 class="card-title">かんたん登録</h3>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">登録する言葉</label>
-                <input type="text" class="form-input" placeholder="例：山田太郎さん、アムロジピン">
-              </div>
-              <div class="form-group">
-                <label class="form-label">読み方（ひらがな）</label>
-                <input type="text" class="form-input" placeholder="例：やまだたろうさん">
-              </div>
-              <div class="form-group">
-                <label class="form-label">種類</label>
-                <select class="form-select">
-                  <option>利用者名</option>
-                  <option>薬の名前</option>
-                  <option>専門用語</option>
-                  <option>その他</option>
-                </select>
-              </div>
+        <section class="filter-bar mb-lg">
+          <div class="form-row" style="align-items: flex-end;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">登録する言葉</label>
+              <input type="text" class="form-input" placeholder="例：山田太郎さん">
             </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-outline">キャンセル</button>
-            <button class="btn btn-primary">登録する</button>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">読み方</label>
+              <input type="text" class="form-input" placeholder="やまだたろうさん">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">種類</label>
+              <select class="form-select">
+                <option>利用者名</option>
+                <option>薬の名前</option>
+                <option>専門用語</option>
+              </select>
+            </div>
+            <button class="btn btn-primary">登録</button>
           </div>
         </section>
 
         <!-- Search -->
-        <section class="card mb-lg">
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom: 0;">
-                <input type="text" class="form-input" placeholder="登録した言葉を検索...">
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <select class="form-select">
-                  <option>すべての種類</option>
-                  <option>利用者名</option>
-                  <option>薬の名前</option>
-                  <option>専門用語</option>
-                </select>
-              </div>
+        <section class="filter-bar mb-lg">
+          <div class="form-row" style="align-items: flex-end;">
+            <div class="form-group" style="margin-bottom: 0; flex: 1;">
+              <input type="text" class="form-input" placeholder="登録した言葉を検索...">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select class="form-select">
+                <option>すべての種類</option>
+                <option>利用者名</option>
+                <option>薬の名前</option>
+                <option>専門用語</option>
+              </select>
             </div>
           </div>
         </section>
 
-        <!-- Word List -->
-        <section class="card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">登録済みの用語</h3>
-              <p class="card-subtitle">全 24件</p>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="item-grid">
-              <!-- Word Cards -->
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">山田 太郎さん</div>
-                    <div class="item-card-subtitle">やまだたろうさん</div>
-                  </div>
-                  <span class="badge badge-primary">利用者名</span>
-                </div>
-                <div class="item-card-footer">
+        <!-- Word List Table -->
+        <section class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>登録語</th>
+                <th>読み方</th>
+                <th>種類</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>山田 太郎さん</strong></td>
+                <td class="text-secondary">やまだたろうさん</td>
+                <td><span class="badge badge-primary">利用者名</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">アムロジピン</div>
-                    <div class="item-card-subtitle">あむろじぴん</div>
-                  </div>
-                  <span class="badge badge-success">薬の名前</span>
-                </div>
-                <div class="item-card-footer">
+                </td>
+              </tr>
+              <tr>
+                <td><strong>アムロジピン</strong></td>
+                <td class="text-secondary">あむろじぴん</td>
+                <td><span class="badge badge-success">薬の名前</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">ナースコール</div>
-                    <div class="item-card-subtitle">なーすこーる</div>
-                  </div>
-                  <span class="badge badge-neutral">専門用語</span>
-                </div>
-                <div class="item-card-footer">
+                </td>
+              </tr>
+              <tr>
+                <td><strong>ナースコール</strong></td>
+                <td class="text-secondary">なーすこーる</td>
+                <td><span class="badge badge-neutral">専門用語</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">佐藤 花子さん</div>
-                    <div class="item-card-subtitle">さとうはなこさん</div>
-                  </div>
-                  <span class="badge badge-primary">利用者名</span>
-                </div>
-                <div class="item-card-footer">
+                </td>
+              </tr>
+              <tr>
+                <td><strong>佐藤 花子さん</strong></td>
+                <td class="text-secondary">さとうはなこさん</td>
+                <td><span class="badge badge-primary">利用者名</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">FreeSWITCH</div>
-                    <div class="item-card-subtitle">ふりーすいっち</div>
-                  </div>
-                  <span class="badge badge-neutral">専門用語</span>
-                </div>
-                <div class="item-card-footer">
+                </td>
+              </tr>
+              <tr>
+                <td><strong>FreeSWITCH</strong></td>
+                <td class="text-secondary">ふりーすいっち</td>
+                <td><span class="badge badge-neutral">専門用語</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">ロキソプロフェン</div>
-                    <div class="item-card-subtitle">ろきそぷろふぇん</div>
-                  </div>
-                  <span class="badge badge-success">薬の名前</span>
-                </div>
-                <div class="item-card-footer">
+                </td>
+              </tr>
+              <tr>
+                <td><strong>ロキソプロフェン</strong></td>
+                <td class="text-secondary">ろきそぷろふぇん</td>
+                <td><span class="badge badge-success">薬の名前</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div class="pagination">
             <button class="btn btn-sm btn-outline">← 前へ</button>
-            <span class="pagination-info">1 / 4 ページ</span>
+            <span class="pagination-info">1 / 4 ページ（24件）</span>
             <button class="btn btn-sm btn-outline">次へ →</button>
           </div>
         </section>

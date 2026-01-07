@@ -98,167 +98,137 @@
         </div>
 
         <!-- Search/Filter -->
-        <section class="card mb-lg">
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom: 0;">
-                <input type="text" class="form-input" placeholder="名前・メールで検索...">
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <select class="form-select">
-                  <option>すべての役割</option>
-                  <option>管理者</option>
-                  <option>一般スタッフ</option>
-                  <option>閲覧のみ</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <select class="form-select">
-                  <option>すべての状態</option>
-                  <option>アクティブ</option>
-                  <option>停止中</option>
-                </select>
-              </div>
+        <section class="filter-bar mb-lg">
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom: 0; flex: 1;">
+              <input type="text" class="form-input" placeholder="名前・メールで検索...">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select class="form-select">
+                <option>すべての役割</option>
+                <option>管理者</option>
+                <option>一般スタッフ</option>
+                <option>閲覧のみ</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <select class="form-select">
+                <option>すべての状態</option>
+                <option>アクティブ</option>
+                <option>停止中</option>
+              </select>
             </div>
           </div>
         </section>
 
-        <!-- Staff List -->
-        <section class="card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">ユーザー一覧</h3>
-              <p class="card-subtitle">全 18名</p>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="item-grid">
-              <!-- Staff Cards -->
-              <div class="item-card">
-                <div class="item-card-header">
+        <!-- Staff List Table -->
+        <section class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ユーザー</th>
+                <th>メールアドレス</th>
+                <th>役割</th>
+                <th>状態</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">山</div>
-                    <div>
-                      <div class="item-card-title">山田 太郎</div>
-                      <div class="item-card-subtitle">t.yamada@example.com</div>
-                    </div>
+                    <div class="user-avatar">山</div>
+                    <strong>山田 太郎</strong>
                   </div>
-                  <span class="badge badge-primary">管理者</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アクティブ</p>
-                </div>
-                <div class="item-card-footer">
+                </td>
+                <td class="text-secondary">t.yamada@example.com</td>
+                <td><span class="badge badge-primary">管理者</span></td>
+                <td><span class="badge badge-success">アクティブ</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-outline">権限変更</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
+                </td>
+              </tr>
+              <tr>
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">佐</div>
-                    <div>
-                      <div class="item-card-title">佐藤 花子</div>
-                      <div class="item-card-subtitle">h.sato@example.com</div>
-                    </div>
+                    <div class="user-avatar">佐</div>
+                    <strong>佐藤 花子</strong>
                   </div>
-                  <span class="badge badge-success">一般スタッフ</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アクティブ</p>
-                </div>
-                <div class="item-card-footer">
+                </td>
+                <td class="text-secondary">h.sato@example.com</td>
+                <td><span class="badge badge-success">一般スタッフ</span></td>
+                <td><span class="badge badge-success">アクティブ</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-outline">権限変更</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
+                </td>
+              </tr>
+              <tr>
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">田</div>
-                    <div>
-                      <div class="item-card-title">田中 一郎</div>
-                      <div class="item-card-subtitle">i.tanaka@example.com</div>
-                    </div>
+                    <div class="user-avatar">田</div>
+                    <strong>田中 一郎</strong>
                   </div>
-                  <span class="badge badge-success">一般スタッフ</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アクティブ</p>
-                </div>
-                <div class="item-card-footer">
+                </td>
+                <td class="text-secondary">i.tanaka@example.com</td>
+                <td><span class="badge badge-success">一般スタッフ</span></td>
+                <td><span class="badge badge-success">アクティブ</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-outline">権限変更</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
+                </td>
+              </tr>
+              <tr>
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">中</div>
-                    <div>
-                      <div class="item-card-title">中村 美咲</div>
-                      <div class="item-card-subtitle">m.nakamura@example.com</div>
-                    </div>
+                    <div class="user-avatar">中</div>
+                    <strong>中村 美咲</strong>
                   </div>
-                  <span class="badge badge-primary">管理者</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アクティブ</p>
-                </div>
-                <div class="item-card-footer">
+                </td>
+                <td class="text-secondary">m.nakamura@example.com</td>
+                <td><span class="badge badge-primary">管理者</span></td>
+                <td><span class="badge badge-success">アクティブ</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-outline">権限変更</button>
-                </div>
-              </div>
-
-              <div class="item-card">
-                <div class="item-card-header">
+                </td>
+              </tr>
+              <tr>
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px;">伊</div>
-                    <div>
-                      <div class="item-card-title">伊藤 健二</div>
-                      <div class="item-card-subtitle">k.ito@example.com</div>
-                    </div>
+                    <div class="user-avatar">伊</div>
+                    <strong>伊藤 健二</strong>
                   </div>
-                  <span class="badge badge-neutral">閲覧のみ</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アクティブ</p>
-                </div>
-                <div class="item-card-footer">
+                </td>
+                <td class="text-secondary">k.ito@example.com</td>
+                <td><span class="badge badge-neutral">閲覧のみ</span></td>
+                <td><span class="badge badge-success">アクティブ</span></td>
+                <td class="table-actions">
                   <button class="btn btn-sm btn-outline">編集</button>
                   <button class="btn btn-sm btn-outline">権限変更</button>
-                </div>
-              </div>
-
-              <div class="item-card" style="border-color: var(--border); background: var(--surface-alt); opacity: 0.7;">
-                <div class="item-card-header">
+                </td>
+              </tr>
+              <tr class="is-inactive">
+                <td>
                   <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 48px; height: 48px; font-size: 18px; background: var(--surface-alt); color: var(--text-secondary);">鈴</div>
-                    <div>
-                      <div class="item-card-title">鈴木 次郎（退職）</div>
-                      <div class="item-card-subtitle">j.suzuki@example.com</div>
-                    </div>
+                    <div class="user-avatar" style="background: var(--surface-alt); color: var(--text-secondary);">鈴</div>
+                    <strong>鈴木 次郎</strong>
                   </div>
-                  <span class="badge badge-neutral">停止中</span>
-                </div>
-                <div class="item-card-body">
-                  <p>アカウント停止中</p>
-                </div>
-                <div class="item-card-footer">
-                  <button class="btn btn-sm btn-outline">詳細を見る</button>
-                  <button class="btn btn-sm btn-ghost text-danger">完全に削除</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
+                </td>
+                <td class="text-secondary">j.suzuki@example.com</td>
+                <td><span class="badge badge-neutral">一般スタッフ</span></td>
+                <td><span class="badge badge-neutral">停止中</span></td>
+                <td class="table-actions">
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                  <button class="btn btn-sm btn-ghost text-danger">削除</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div class="pagination">
             <button class="btn btn-sm btn-outline">← 前へ</button>
-            <span class="pagination-info">1 / 3 ページ</span>
+            <span class="pagination-info">1 / 3 ページ（18名）</span>
             <button class="btn btn-sm btn-outline">次へ →</button>
           </div>
         </section>

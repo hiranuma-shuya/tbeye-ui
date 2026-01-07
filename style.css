@@ -934,3 +934,17 @@ input, select, textarea {
   color: var(--text-secondary);
   margin: 0 var(--space-md);
 }
+
+/* ===== Filter Bar - Lightweight Search/Filter Section ===== */
+.filter-bar {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  border: 1px solid var(--border);
+}
+
+/* ===== Table Row States ===== */
+.table tr.is-inactive td {
+  opacity: 0.6;
+  background: var(--surface-alt);
+}
