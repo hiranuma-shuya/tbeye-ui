@@ -6,6 +6,7 @@
   <title>G1 の通話状況 - グループ詳細</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* ===== Back Link ===== */
     .back-link {
       display: inline-flex;
       align-items: center;
@@ -19,6 +20,8 @@
     .back-link:hover {
       color: var(--primary);
     }
+
+    /* ===== Group Header ===== */
     .group-header {
       display: flex;
       align-items: center;
@@ -30,38 +33,234 @@
       justify-content: center;
       width: 40px;
       height: 40px;
-      background: var(--primary);
-      color: white;
+      background: var(--primary-light);
+      color: var(--primary);
       border-radius: var(--radius);
       font-size: var(--text-base);
       font-weight: 700;
     }
+
+    /* ===== System Status (same as sip-groups) ===== */
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--success-light);
+      color: var(--success);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: var(--text-xs);
+    }
+    .system-status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .system-status-time {
+      margin-left: var(--space-sm);
+      padding-left: var(--space-sm);
+      border-left: 1px solid var(--success);
+      opacity: 0.8;
+    }
+
+    /* ===== Status Badge (same as sip-groups) ===== */
+    .group-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .group-status.is-active {
+      background: var(--success-light);
+      color: var(--success);
+    }
+    .group-status.is-online {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .group-status.is-offline {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+    }
+    .group-status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .group-status.is-active .group-status-dot {
+      animation: pulse 2s infinite;
+    }
+
+    /* ===== Legend (same as sip-groups) ===== */
+    .legend-inline {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-left: auto;
+    }
+    .legend-item {
+      position: relative;
+      cursor: help;
+    }
+    .legend-item .legend-tooltip {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.15s ease;
+      z-index: 100;
+    }
+    .legend-item:hover .legend-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ===== Filter Row ===== */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    /* ===== Section Header ===== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .section-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text);
+    }
+    .section-count {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .section-count.is-active {
+      background: var(--success-light);
+      color: var(--success);
+    }
+    .section-count.is-online {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .section-count.is-offline {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+    }
+    .section-header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .btn-with-time {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .btn-time {
+      opacity: 0.85;
+      padding-left: var(--space-sm);
+      border-left: 1px solid rgba(255,255,255,0.3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== Device Grid ===== */
+    .device-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-md);
+    }
+
+    /* ===== Device Card ===== */
     .device-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: var(--space-md);
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
     .device-card:hover {
-      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
     }
+
+    /* Active (通話中) - Green */
     .device-card.is-active {
+      background: var(--success-light);
+      border-color: var(--success);
+    }
+    .device-card.is-active:hover {
+      border-color: var(--success);
+    }
+    .device-card.is-active .device-status {
+      color: var(--success);
+    }
+    .device-card.is-active .device-status-dot {
+      background: var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Online (待機中) - Blue */
+    .device-card.is-online {
+      border-color: var(--border);
+    }
+    .device-card.is-online:hover {
       border-color: var(--primary);
-      background: var(--primary-light);
     }
+    .device-card.is-online .device-status {
+      color: var(--primary);
+    }
+    .device-card.is-online .device-status-dot {
+      background: var(--primary);
+    }
+
+    /* Offline - Gray */
     .device-card.is-offline {
-      opacity: 0.5;
       background: var(--surface-alt);
+      opacity: 0.6;
     }
+    .device-card.is-offline:hover {
+      opacity: 1;
+      border-color: var(--text-muted);
+    }
+    .device-card.is-offline .device-status {
+      color: var(--text-muted);
+    }
+    .device-card.is-offline .device-status-dot {
+      background: var(--text-muted);
+    }
+
     .device-header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: var(--space-sm);
     }
     .device-id {
-      font-size: var(--text-base);
+      font-size: var(--text-sm);
       font-weight: 600;
       color: var(--text);
     }
@@ -69,94 +268,26 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
       font-size: 10px;
       font-weight: 500;
     }
-    .device-status.is-active {
-      background: var(--primary);
-      color: white;
-    }
-    .device-status.is-online {
-      background: var(--surface-alt);
-      color: var(--text-secondary);
-    }
-    .device-status.is-offline {
-      background: var(--danger-light);
-      color: var(--danger);
-    }
     .device-status-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-    }
-    .device-status.is-active .device-status-dot {
-      background: white;
-      animation: pulse 1.5s infinite;
-    }
-    .device-status.is-online .device-status-dot {
-      background: var(--text-muted);
-    }
-    .device-status.is-offline .device-status-dot {
-      background: var(--danger);
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .device-info {
-      color: var(--text-secondary);
-      font-size: var(--text-xs);
-      margin-bottom: var(--space-sm);
-    }
-    .device-call-info {
-      background: var(--primary-light);
-      border-radius: var(--radius-sm);
-      padding: var(--space-sm);
-      margin-bottom: var(--space-sm);
-    }
-    .device-call-time {
-      font-size: var(--text-xl);
-      font-weight: 700;
-      color: var(--primary);
-    }
-    .device-call-target {
-      font-size: var(--text-xs);
-      color: var(--text-secondary);
-      margin-top: 2px;
-    }
-    .device-actions {
-      display: flex;
-      gap: 4px;
-    }
-    .status-legend {
-      display: flex;
-      gap: var(--space-lg);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--surface-alt);
-      border-radius: var(--radius);
-      font-size: var(--text-xs);
-      color: var(--text-secondary);
-    }
-    .status-legend-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-    .status-legend-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
     }
-    .status-legend-dot.is-active {
-      background: var(--primary);
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-    .status-legend-dot.is-online {
-      background: var(--text-muted);
+
+    /* ===== Spacing ===== */
+    .monitor-section {
+      margin-bottom: var(--space-xl);
     }
-    .status-legend-dot.is-offline {
-      background: var(--danger);
+    .monitor-section:last-child {
+      margin-bottom: 0;
     }
   </style>
 </head>
@@ -176,7 +307,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item is-active">
-            通話モニター
+            SIPリアルタイム監視
           </a>
           <a href="call-logs.html" class="nav-item">
             通話履歴
@@ -220,153 +351,148 @@
             </div>
           </div>
           <div class="header-actions">
-            <span class="badge badge-success">2秒前に更新</span>
-            <button class="btn btn-outline">更新</button>
+            <div class="system-status">
+              <span class="system-status-dot"></span>
+              正常稼働中
+              <span class="system-status-time">更新: <strong id="update-time">2秒前</strong></span>
+            </div>
+            <button class="btn btn-outline" onclick="location.reload()">
+              更新
+            </button>
           </div>
         </div>
       </header>
 
       <div class="main-content">
-        <!-- Status Cards -->
-        <section class="grid grid-3 mb-lg">
-          <div class="status-card is-primary">
-            <div class="status-card-value">2</div>
-            <div class="status-card-label">アクティブ（通話中）</div>
-          </div>
-
-          <div class="status-card">
-            <div class="status-card-value">3</div>
-            <div class="status-card-label">オンライン（待機中）</div>
-          </div>
-
-          <div class="status-card is-danger">
-            <div class="status-card-value">1</div>
-            <div class="status-card-label">オフライン</div>
-          </div>
-        </section>
-
-        <!-- Status Legend -->
-        <div class="status-legend mb-lg">
-          <div class="status-legend-item">
-            <span class="status-legend-dot is-active"></span>
-            <span><strong>アクティブ</strong>: 現在通話中</span>
-          </div>
-          <div class="status-legend-item">
-            <span class="status-legend-dot is-online"></span>
-            <span><strong>オンライン</strong>: 接続中・待機中</span>
-          </div>
-          <div class="status-legend-item">
-            <span class="status-legend-dot is-offline"></span>
-            <span><strong>オフライン</strong>: 接続されていない</span>
+        <!-- Filter Row -->
+        <div class="filter-row">
+          <a href="ai-minutes.html" class="btn btn-primary btn-with-time">
+            AI議事録を確認する
+            <span class="btn-time">02:34</span>
+          </a>
+          <div class="legend-inline">
+            <div class="legend-item">
+              <span class="group-status is-active"><span class="group-status-dot"></span>通話中</span>
+              <span class="legend-tooltip">現在通話が行われている</span>
+            </div>
+            <div class="legend-item">
+              <span class="group-status is-online"><span class="group-status-dot"></span>待機中</span>
+              <span class="legend-tooltip">接続中だが通話なし</span>
+            </div>
+            <div class="legend-item">
+              <span class="group-status is-offline"><span class="group-status-dot"></span>オフライン</span>
+              <span class="legend-tooltip">接続している子機なし</span>
+            </div>
           </div>
         </div>
 
-        <!-- Device List -->
-        <section class="card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">子機一覧</h3>
-              <p class="card-subtitle">G1グループに所属する子機: 6台</p>
-            </div>
+        <!-- Active Calls Section -->
+        <section class="monitor-section">
+          <div class="section-header">
+            <span class="section-title">通話中</span>
+            <span class="section-count is-active">3</span>
           </div>
-          <div class="card-body">
-            <div class="item-grid">
-              <!-- Active Device 1 -->
-              <div class="device-card is-active">
-                <div class="device-header">
-                  <div class="device-id">子機 2001</div>
-                  <div class="device-status is-active">
-                    <span class="device-status-dot"></span>
-                    アクティブ
-                  </div>
-                </div>
-                <div class="device-call-info">
-                  <div class="device-call-time">02:34</div>
-                  <div class="device-call-target">子機 2003 と通話中</div>
-                </div>
-                <div class="device-actions">
-                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">AI議事録を開く</a>
-                </div>
+          <div class="device-grid">
+            <div class="device-card is-active">
+              <div class="device-header">
+                <span class="device-id">子機 2001</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  通話中
+                </span>
               </div>
-
-              <!-- Active Device 2 -->
-              <div class="device-card is-active">
-                <div class="device-header">
-                  <div class="device-id">子機 2003</div>
-                  <div class="device-status is-active">
-                    <span class="device-status-dot"></span>
-                    アクティブ
-                  </div>
-                </div>
-                <div class="device-call-info">
-                  <div class="device-call-time">02:34</div>
-                  <div class="device-call-target">子機 2001 と通話中</div>
-                </div>
-                <div class="device-actions">
-                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">AI議事録を開く</a>
-                </div>
+            </div>
+            <div class="device-card is-active">
+              <div class="device-header">
+                <span class="device-id">子機 2003</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  通話中
+                </span>
               </div>
-
-              <!-- Online Device 1 -->
-              <div class="device-card">
-                <div class="device-header">
-                  <div class="device-id">子機 2002</div>
-                  <div class="device-status is-online">
-                    <span class="device-status-dot"></span>
-                    オンライン
-                  </div>
-                </div>
-                <div class="device-info">
-                  接続中・待機中
-                </div>
-              </div>
-
-              <!-- Online Device 2 -->
-              <div class="device-card">
-                <div class="device-header">
-                  <div class="device-id">子機 2004</div>
-                  <div class="device-status is-online">
-                    <span class="device-status-dot"></span>
-                    オンライン
-                  </div>
-                </div>
-                <div class="device-info">
-                  接続中・待機中
-                </div>
-              </div>
-
-              <!-- Online Device 3 -->
-              <div class="device-card">
-                <div class="device-header">
-                  <div class="device-id">子機 2005</div>
-                  <div class="device-status is-online">
-                    <span class="device-status-dot"></span>
-                    オンライン
-                  </div>
-                </div>
-                <div class="device-info">
-                  接続中・待機中
-                </div>
-              </div>
-
-              <!-- Offline Device -->
-              <div class="device-card is-offline">
-                <div class="device-header">
-                  <div class="device-id">子機 2006</div>
-                  <div class="device-status is-offline">
-                    <span class="device-status-dot"></span>
-                    オフライン
-                  </div>
-                </div>
-                <div class="device-info">
-                  1時間前から接続されていません
-                </div>
+            </div>
+            <div class="device-card is-active">
+              <div class="device-header">
+                <span class="device-id">子機 2005</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  通話中
+                </span>
               </div>
             </div>
           </div>
         </section>
+
+        <!-- Online Devices Section -->
+        <section class="monitor-section">
+          <div class="section-header">
+            <span class="section-title">待機中</span>
+            <span class="section-count is-online">3</span>
+          </div>
+          <div class="device-grid">
+            <div class="device-card is-online">
+              <div class="device-header">
+                <span class="device-id">子機 2002</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  待機中
+                </span>
+              </div>
+            </div>
+            <div class="device-card is-online">
+              <div class="device-header">
+                <span class="device-id">子機 2004</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  待機中
+                </span>
+              </div>
+            </div>
+            <div class="device-card is-online">
+              <div class="device-header">
+                <span class="device-id">子機 2007</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  待機中
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Offline Devices Section -->
+        <section class="monitor-section">
+          <div class="section-header">
+            <span class="section-title">オフライン</span>
+            <span class="section-count is-offline">1</span>
+          </div>
+          <div class="device-grid">
+            <div class="device-card is-offline">
+              <div class="device-header">
+                <span class="device-id">子機 2006</span>
+                <span class="device-status">
+                  <span class="device-status-dot"></span>
+                  1時間前〜
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
+
+  <script>
+    // Update time counter
+    let seconds = 2;
+    setInterval(() => {
+      seconds++;
+      const updateEl = document.getElementById('update-time');
+      if (updateEl) {
+        updateEl.textContent = seconds + '秒前';
+      }
+    }, 1000);
+  </script>
 </body>
 </html>

@@ -6,308 +6,694 @@
   <title>AI議事録 - 会話を記録する</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Segment Control for On-prem/Cloud selection */
-    .segment-control {
-      display: inline-flex;
-      background: var(--surface-alt);
-      border-radius: var(--radius-sm);
-      padding: 2px;
-      gap: 2px;
+    /* Two Column Layout */
+    .minutes-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      height: calc(100vh - 160px);
     }
 
-    .segment-control-item {
-      padding: var(--space-xs) var(--space-md);
-      font-size: var(--text-xs);
-      font-weight: 600;
-      border: none;
-      background: transparent;
-      border-radius: 3px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
+    @media (max-width: 1000px) {
+      .minutes-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
     }
 
-    .segment-control-item:hover {
-      color: var(--text);
+    .minutes-column {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
-    .segment-control-item.is-active {
-      background: var(--surface);
-      color: var(--primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    /* Toggle Switch */
-    .toggle-row {
+    /* Recording Controls in Header */
+    .recording-controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: var(--space-sm) 0;
+      gap: var(--space-sm);
+    }
+
+    .record-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .record-btn:hover {
+      background: #dc2626;
+    }
+
+    .record-btn.is-recording {
+      animation: pulse-bg 1.5s infinite;
+    }
+
+    @keyframes pulse-bg {
+      0%, 100% { background: var(--danger); }
+      50% { background: #b91c1c; }
+    }
+
+    .record-dot {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .record-btn.is-recording .record-dot {
+      animation: pulse 1s infinite;
+    }
+
+    .recording-time {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--danger);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Settings Sections */
+    .settings-section {
+      padding: var(--space-sm) var(--space-md);
       border-bottom: 1px solid var(--border-light);
     }
 
-    .toggle-row:last-child {
+    .settings-section:last-child {
       border-bottom: none;
     }
 
-    .toggle-label {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .toggle-label-main {
+    .settings-label {
+      font-size: 10px;
       font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-xs) 0;
+    }
+
+    .settings-row-label {
       font-size: var(--text-sm);
+      color: var(--text);
     }
 
-    .toggle-label-sub {
-      font-size: var(--text-xs);
-      color: var(--text-secondary);
-    }
-
-    .toggle-switch {
+    /* Compact Toggle */
+    .toggle-sm {
       position: relative;
-      width: 36px;
-      height: 20px;
+      width: 32px;
+      height: 18px;
       background: var(--border);
       border-radius: 999px;
       cursor: pointer;
-      transition: background 0.2s ease;
       border: none;
       padding: 0;
     }
 
-    .toggle-switch::after {
+    .toggle-sm::after {
       content: "";
       position: absolute;
       top: 2px;
       left: 2px;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       background: white;
       border-radius: 50%;
-      box-shadow: var(--shadow-sm);
       transition: transform 0.2s ease;
     }
 
-    .toggle-switch.is-on {
+    .toggle-sm.is-on {
       background: var(--primary);
     }
 
-    .toggle-switch.is-on::after {
-      transform: translateX(16px);
+    .toggle-sm.is-on::after {
+      transform: translateX(14px);
     }
 
-    /* Recording Options Panel */
-    .recording-options {
-      background: var(--surface);
-      border-radius: var(--radius);
+    /* Group Quick Select */
+    .group-quick-select {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+
+    .group-chip {
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--surface-alt);
       border: 1px solid var(--border);
-      margin-bottom: var(--space-md);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .recording-options-header {
+    .group-chip:hover,
+    .group-chip.is-selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Transcript Panel */
+    .transcript-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .panel-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .transcript-item {
       padding: var(--space-sm) var(--space-md);
       border-bottom: 1px solid var(--border-light);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
     }
 
-    .recording-options-header:hover {
+    .transcript-item:hover {
       background: var(--surface-alt);
     }
 
-    .recording-options-title {
+    .transcript-time {
+      color: var(--text-muted);
+      font-size: var(--text-xs);
+      min-width: 40px;
+    }
+
+    .transcript-speaker {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      min-width: 50px;
+    }
+
+    .transcript-text {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .panel-footer {
+      padding: var(--space-sm) var(--space-md);
+      border-top: 1px solid var(--border);
+      background: var(--surface-alt);
+      display: flex;
+      gap: var(--space-xs);
+      flex-shrink: 0;
+    }
+
+    /* Summary Panel */
+    .summary-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .summary-textarea {
+      flex: 1;
+      width: 100%;
+      padding: var(--space-md);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+      border: none;
+      resize: none;
+      font-family: inherit;
+    }
+
+    .summary-textarea:focus {
+      outline: none;
+    }
+
+    /* Format Select */
+    .format-select {
+      padding: 2px 8px;
+      font-size: var(--text-xs);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--surface);
+    }
+
+    /* Status Indicator */
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .status-dot.is-active {
+      background: var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    .status-dot.is-recording {
+      background: var(--danger);
+      animation: pulse 1s infinite;
+    }
+
+    /* Recordings Bar */
+    .recordings-bar {
       display: flex;
       align-items: center;
       gap: var(--space-sm);
-      font-weight: 600;
-      font-size: var(--text-sm);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--border-light);
     }
 
-    .recording-options-toggle {
-      color: var(--text-secondary);
-      font-size: var(--text-sm);
-      transition: transform 0.2s ease;
-    }
-
-    .recording-options.is-expanded .recording-options-toggle {
-      transform: rotate(180deg);
-    }
-
-    .recording-options-body {
-      padding: var(--space-md);
-      display: none;
-    }
-
-    .recording-options.is-expanded .recording-options-body {
-      display: block;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-md);
-    }
-
-    @media (max-width: 900px) {
-      .options-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .option-section {
-      background: var(--surface-alt);
-      border-radius: var(--radius-sm);
-      padding: var(--space-md);
-    }
-
-    .option-section-title {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: var(--space-sm);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    /* Quick Dictionary Entry */
-    .quick-dict-form {
-      background: var(--primary-light);
-      border: 1px solid var(--primary);
-      border-radius: var(--radius-sm);
-      padding: var(--space-md);
-      margin-top: var(--space-sm);
-    }
-
-    .quick-dict-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-sm);
-    }
-
-    .quick-dict-title {
-      font-weight: 600;
-      font-size: var(--text-sm);
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .quick-dict-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 100px 60px;
-      gap: var(--space-xs);
-      align-items: end;
-    }
-
-    @media (max-width: 768px) {
-      .quick-dict-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .quick-dict-input {
-      padding: var(--space-xs) var(--space-sm);
+    .recordings-bar-label {
       font-size: var(--text-xs);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      background: var(--surface);
-      min-height: 28px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
     }
 
-    .quick-dict-input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    /* Current Settings Summary */
-    .current-settings {
+    .recordings-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-xs);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--surface-alt);
-      border-radius: 0 0 var(--radius) var(--radius);
-    }
-
-    .setting-chip {
-      display: inline-flex;
-      align-items: center;
       gap: 4px;
-      padding: 2px 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 10px;
-      font-weight: 500;
+      flex: 1;
+      overflow-x: auto;
+      padding: 2px 0;
     }
 
-    .setting-chip.is-active {
-      background: var(--primary-light);
-      border-color: var(--primary);
-      color: var(--primary);
+    .recordings-list::-webkit-scrollbar {
+      height: 0;
     }
 
-    /* Priority Slider */
-    .priority-input {
+    .recording-tab {
       display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-
-    .priority-input input[type="number"] {
-      width: 48px;
-      padding: var(--space-xs);
-      font-size: var(--text-xs);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      text-align: center;
-      min-height: 28px;
-    }
-
-    /* Group Selection */
-    .group-select-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-      gap: var(--space-xs);
-      margin-top: var(--space-xs);
-    }
-
-    .group-select-item {
-      padding: var(--space-sm);
-      text-align: center;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-xs) var(--space-sm);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all 0.15s ease;
-      background: var(--surface);
-      font-weight: 600;
-      font-size: var(--text-xs);
+      white-space: nowrap;
+      min-width: 100px;
     }
 
-    .group-select-item:hover {
-      border-color: var(--primary);
+    .recording-tab:hover {
+      background: var(--surface-alt);
+      border-color: var(--border);
+    }
+
+    .recording-tab.is-active {
       background: var(--primary-light);
+      border-color: var(--primary);
     }
 
-    .group-select-item.is-selected {
-      border-color: var(--primary);
+    .recording-tab-date {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .recording-tab.is-active .recording-tab-date {
+      color: var(--primary);
+    }
+
+    .recording-tab-title {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* Panel Tabs */
+    .panel-tabs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .panel-tab {
+      padding: 4px 10px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .panel-tab:hover {
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+
+    .panel-tab.is-active {
       background: var(--primary-light);
       color: var(--primary);
     }
 
-    .group-select-item input {
-      display: none;
+    .panel-tab-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* Version List */
+    .version-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .version-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .version-item:hover {
+      background: var(--surface-alt);
+    }
+
+    .version-item.is-current {
+      background: var(--primary-light);
+    }
+
+    .version-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .version-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .version-time {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .version-author {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+
+    /* Dictionary Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      transform: translateY(-10px) scale(0.98);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.is-open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      background: var(--surface-alt);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: var(--space-lg);
+    }
+
+    .modal-footer {
+      padding: var(--space-md) var(--space-lg);
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-sm);
+    }
+
+    .category-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .category-pill {
+      padding: 6px 12px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .category-pill:hover {
+      border-color: var(--text-secondary);
+    }
+
+    .category-pill.is-selected {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .category-pill[data-color="success"].is-selected {
+      background: #dcfce7;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .category-pill[data-color="neutral"].is-selected {
+      background: var(--surface-alt);
+      border-color: var(--text-secondary);
+      color: var(--text-secondary);
+    }
+
+    /* Current Settings Display */
+    .current-settings {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .setting-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--surface-alt);
+      border-radius: 999px;
+    }
+
+    .setting-tag.is-highlight {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .setting-edit {
+      font-size: 10px;
+      color: var(--primary);
+      margin-left: 2px;
+    }
+
+    .current-settings:hover .setting-edit {
+      text-decoration: underline;
+    }
+
+    /* Start Record Button in Settings */
+    .start-record-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .start-record-btn:hover {
+      background: #dc2626;
+    }
+
+    .start-record-btn .record-dot {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    /* Editor Toolbar */
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: var(--space-xs) var(--space-md);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface-alt);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 var(--space-sm);
+    }
+
+    .toolbar-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 32px;
+      height: 28px;
+      padding: 0 var(--space-sm);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .toolbar-btn:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .toolbar-btn:active {
+      background: var(--border);
+    }
+
+    .toolbar-btn.is-active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .toolbar-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .toolbar-btn:disabled:hover {
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .toolbar-icon {
+      font-size: 14px;
+      line-height: 1;
     }
   </style>
 </head>
@@ -327,7 +713,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item">
-            通話モニター
+            SIPリアルタイム監視
           </a>
           <a href="call-logs.html" class="nav-item">
             通話履歴
@@ -362,254 +748,142 @@
         <div class="main-header-inner">
           <div>
             <h1 class="page-title">AI議事録</h1>
-            <p class="page-description">会話を録音して、自動で文字起こし・要約します</p>
+            <div class="current-settings" id="currentSettings" onclick="openRecordModal('edit')" style="cursor: pointer;">
+              <span class="setting-tag" id="tagMode">オンプレミス</span>
+              <span class="setting-tag is-highlight" id="tagDict">辞書ON</span>
+              <span class="setting-tag" id="tagGroup">G1</span>
+              <span class="setting-tag" id="tagLocation">ナースステーション</span>
+              <span class="setting-edit">変更</span>
+            </div>
           </div>
-          <div class="header-actions">
-            <a href="dictionary.html" class="btn btn-outline">
-              辞書を編集
-            </a>
+          <div class="recording-controls">
+            <span class="recording-time" id="recordingTime" style="display: none;">00:00</span>
+
+            <button class="record-btn" id="recordBtn" onclick="handleRecordClick()">
+              <span class="record-dot"></span>
+              <span id="recordLabel">録音開始</span>
+            </button>
           </div>
         </div>
       </header>
 
       <div class="main-content">
-        <!-- Recording Panel -->
-        <section class="recording-panel mb-lg" id="recordingPanel">
-          <h2 class="recording-panel-title">録音を開始する</h2>
-          <p class="recording-panel-subtitle">
-            ボタンを押すと、会話の録音と文字起こしが始まります
-          </p>
-          <button class="recording-btn" id="recordBtn">
-            AI議事録をスタート
-          </button>
+        <!-- Recent Call History -->
+        <section class="recordings-bar">
+          <div class="recordings-bar-label">最近の通話履歴</div>
+          <div class="recordings-list">
+            <button class="recording-tab is-active">
+              <span class="recording-tab-date">今日 09:12</span>
+              <span class="recording-tab-title">朝の申し送り</span>
+            </button>
+            <button class="recording-tab">
+              <span class="recording-tab-date">昨日 14:30</span>
+              <span class="recording-tab-title">カンファレンス</span>
+            </button>
+            <button class="recording-tab">
+              <span class="recording-tab-date">1/6 10:00</span>
+              <span class="recording-tab-title">朝の申し送り</span>
+            </button>
+            <button class="recording-tab">
+              <span class="recording-tab-date">1/5 15:45</span>
+              <span class="recording-tab-title">家族面談</span>
+            </button>
+            <button class="recording-tab">
+              <span class="recording-tab-date">1/5 09:10</span>
+              <span class="recording-tab-title">朝の申し送り</span>
+            </button>
+          </div>
+          <button class="btn btn-sm btn-ghost" onclick="location.href='call-logs.html'">すべて表示</button>
         </section>
 
-        <!-- Recording Options - Collapsed by default -->
-        <section class="recording-options">
-          <div class="recording-options-header" onclick="this.parentElement.classList.toggle('is-expanded')">
-            <div class="recording-options-title">
-              録音オプション
-              <span class="badge badge-neutral">3項目設定済み</span>
-            </div>
-            <span class="recording-options-toggle">▼</span>
-          </div>
-
-          <div class="recording-options-body">
-            <div class="options-grid">
-              <!-- Left Column: Processing & Dictionary -->
-              <div>
-                <!-- Processing Mode -->
-                <div class="option-section mb-md">
-                  <div class="option-section-title">
-                    処理モード
-                  </div>
-                  <div class="segment-control">
-                    <button class="segment-control-item is-active">オンプレミス</button>
-                    <button class="segment-control-item">クラウド</button>
-                  </div>
-                  <p class="form-help mt-sm">オンプレミス: 施設内サーバーで処理（高速・セキュア）</p>
-                </div>
-
-                <!-- Dictionary Settings -->
-                <div class="option-section">
-                  <div class="option-section-title">
-                    辞書設定
-                  </div>
-                  <div class="toggle-row">
-                    <div class="toggle-label">
-                      <span class="toggle-label-main">辞書を使用する</span>
-                      <span class="toggle-label-sub">登録した用語を文字起こしに反映</span>
-                    </div>
-                    <button class="toggle-switch is-on" onclick="this.classList.toggle('is-on')"></button>
-                  </div>
+        <div class="minutes-layout">
+          <!-- Left: Transcript -->
+          <div class="minutes-column">
+            <div class="transcript-panel">
+              <div class="panel-header">
+                <span class="panel-title">文字起こし</span>
+                <div class="status-indicator">
+                  <span class="status-dot" id="transcriptStatus"></span>
+                  <span id="transcriptStatusText">待機中</span>
                 </div>
               </div>
-
-              <!-- Right Column: Group & Record Settings -->
-              <div>
-                <!-- Group Selection -->
-                <div class="option-section mb-md">
-                  <div class="option-section-title">
-                    グループ選択
-                  </div>
-                  <p class="text-sm text-secondary mb-sm">録音を紐付けるグループを選択</p>
-                  <div class="group-select-grid">
-                    <label class="group-select-item is-selected">
-                      <input type="radio" name="group" checked>
-                      G1
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G2
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G3
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G4
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G5
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G6
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G7
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G8
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G9
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G10
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G11
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G12
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G13
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G14
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G15
-                    </label>
-                    <label class="group-select-item">
-                      <input type="radio" name="group">
-                      G16
-                    </label>
-                  </div>
+              <div class="panel-body">
+                <div class="transcript-item">
+                  <span class="transcript-time">09:12</span>
+                  <span class="transcript-speaker">Staff</span>
+                  <span class="transcript-text">本日の申し送りを開始します。夜間の対応状況から共有します。</span>
                 </div>
-
-                <!-- Basic Settings -->
-                <div class="option-section">
-                  <div class="option-section-title">
-                    記録の設定
-                  </div>
-                  <div class="form-group mb-md">
-                    <label class="form-label">記録のタイトル</label>
-                    <input type="text" class="form-input" placeholder="例：朝の申し送り、電話対応など">
-                  </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label class="form-label">場所</label>
-                    <select class="form-select">
-                      <option>ナースステーション</option>
-                      <option>1階フロア</option>
-                      <option>2階フロア</option>
-                      <option>相談室</option>
-                    </select>
-                  </div>
+                <div class="transcript-item">
+                  <span class="transcript-time">09:13</span>
+                  <span class="transcript-speaker">Staff</span>
+                  <span class="transcript-text">Aさんは38度台の発熱があり、検温と経過観察を継続しています。</span>
                 </div>
+                <div class="transcript-item">
+                  <span class="transcript-time">09:14</span>
+                  <span class="transcript-speaker">Staff</span>
+                  <span class="transcript-text">服薬については、予定通り投与済みです。</span>
+                </div>
+                <div class="transcript-item">
+                  <span class="transcript-time">09:15</span>
+                  <span class="transcript-speaker">Other</span>
+                  <span class="transcript-text">了解です。次回の確認事項は、体温推移と食事量ですね。</span>
+                </div>
+                <div class="transcript-item">
+                  <span class="transcript-time">09:16</span>
+                  <span class="transcript-speaker">Staff</span>
+                  <span class="transcript-text">では次に、Bさんの転倒リスクについて共有します。見守りを強化してください。</span>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
+                <button class="btn btn-sm btn-outline">編集</button>
               </div>
             </div>
           </div>
 
-          <!-- Current Settings Summary -->
-          <div class="current-settings">
-            <span class="setting-chip is-active">オンプレミス</span>
-            <span class="setting-chip is-active">辞書ON</span>
-            <span class="setting-chip is-active">G1</span>
-            <span class="setting-chip">ナースステーション</span>
-          </div>
-        </section>
-
-        <!-- Main Content Area -->
-        <div>
-          <!-- Transcript Section -->
-          <section class="transcript-container mb-lg">
-            <div class="transcript-header">
-              <div>
-                <h3 class="card-title">文字起こし</h3>
-                <p class="text-sm text-secondary">リアルタイムで表示されます</p>
-              </div>
-              <span class="badge badge-neutral">待機中</span>
-            </div>
-
-            <div class="transcript-list">
-              <!-- Sample transcripts -->
-              <div class="transcript-item">
-                <span class="transcript-time">09:12</span>
-                <span class="transcript-speaker">スタッフ</span>
-                <span class="transcript-text">本日の申し送りを開始します。夜間の対応状況から共有します。</span>
-              </div>
-              <div class="transcript-item">
-                <span class="transcript-time">09:13</span>
-                <span class="transcript-speaker">スタッフ</span>
-                <span class="transcript-text">Aさんは38度台の発熱があり、検温と経過観察を継続しています。</span>
-              </div>
-              <div class="transcript-item">
-                <span class="transcript-time">09:14</span>
-                <span class="transcript-speaker">スタッフ</span>
-                <span class="transcript-text">服薬については、予定通り投与済みです。</span>
-              </div>
-              <div class="transcript-item">
-                <span class="transcript-time">09:15</span>
-                <span class="transcript-speaker">相手</span>
-                <span class="transcript-text">了解です。次回の確認事項は、体温推移と食事量ですね。</span>
-              </div>
-              <div class="transcript-item">
-                <span class="transcript-time">09:16</span>
-                <span class="transcript-speaker">スタッフ</span>
-                <span class="transcript-text">では次に、Bさんの転倒リスクについて共有します。見守りを強化してください。</span>
-              </div>
-            </div>
-
-            <div class="card-footer">
-              <button class="btn btn-outline btn-sm">辞書に追加</button>
-              <button class="btn btn-outline btn-sm">テキストを修正</button>
-            </div>
-          </section>
-
-          <!-- Summary Section -->
-          <section class="summary-editor mb-lg">
-            <div class="card-header">
-              <div>
-                <h3 class="card-title">要約・レポート</h3>
-                <p class="card-subtitle">AIが自動で作成します</p>
-              </div>
-            </div>
-
-            <div class="summary-toolbar">
-              <button class="btn btn-sm btn-ghost">戻す</button>
-              <button class="btn btn-sm btn-ghost">やり直し</button>
-              <span style="border-left: 1px solid var(--border); margin: 0 8px;"></span>
-              <button class="btn btn-sm btn-ghost">太字</button>
-              <button class="btn btn-sm btn-ghost">箇条書き</button>
-              <button class="btn btn-sm btn-ghost">AIで整形</button>
-            </div>
-
-            <div class="summary-content">
-              <div class="form-group">
-                <label class="form-label">レポートの形式</label>
-                <select class="form-select">
-                  <option>メール送信用（短く要点のみ）</option>
-                  <option>施設保存用（詳細に記録）</option>
+          <!-- Right: Summary -->
+          <div class="minutes-column">
+            <div class="summary-panel">
+              <div class="panel-header">
+                <div class="panel-tabs">
+                  <button class="panel-tab is-active" onclick="switchSummaryTab(this, 'summary')">要約</button>
+                  <button class="panel-tab" onclick="switchSummaryTab(this, 'history')">履歴</button>
+                </div>
+                <select class="format-select" id="formatSelect">
+                  <option>メール用（短く）</option>
+                  <option>保存用（詳細）</option>
                 </select>
               </div>
-
-              <div class="form-group">
-                <label class="form-label">要約内容</label>
-                <textarea class="summary-textarea">【要約】
+              <div class="panel-tab-content" id="summaryContent">
+                <div class="editor-toolbar">
+                  <div class="toolbar-group">
+                    <button class="toolbar-btn" title="元に戻す (Ctrl+Z)" onclick="document.execCommand('undo')">
+                      <span class="toolbar-icon">↩</span>
+                      戻す
+                    </button>
+                    <button class="toolbar-btn" title="やり直し (Ctrl+Y)" onclick="document.execCommand('redo')">
+                      <span class="toolbar-icon">↪</span>
+                      やり直し
+                    </button>
+                  </div>
+                  <div class="toolbar-divider"></div>
+                  <div class="toolbar-group">
+                    <button class="toolbar-btn" title="太字" onclick="toggleBold()">
+                      <strong>太字</strong>
+                    </button>
+                    <button class="toolbar-btn" title="箇条書き" onclick="insertBullet()">
+                      <span class="toolbar-icon">•</span>
+                      箇条書き
+                    </button>
+                  </div>
+                  <div class="toolbar-divider"></div>
+                  <div class="toolbar-group">
+                    <button class="toolbar-btn" title="AIで整形">
+                      AIで整形
+                    </button>
+                  </div>
+                </div>
+                <textarea class="summary-textarea" id="summaryTextarea" placeholder="録音を開始すると、AIが自動で要約を作成します...">【要約】
 ・夜間の対応：ナースコール ○件（詳細は履歴参照）
 ・Aさん：発熱（38℃台）→ 検温／経過観察を継続
 ・服薬：予定通り投与済み
@@ -618,80 +892,332 @@
 【対応メモ】
 ・転倒リスク：Bさん（見守り強化）</textarea>
               </div>
+              <div class="panel-tab-content" id="historyContent" style="display: none;">
+                <div class="version-list">
+                  <div class="version-item is-current">
+                    <div class="version-info">
+                      <span class="version-label">現在</span>
+                      <span class="version-time">09:20 保存</span>
+                    </div>
+                    <span class="version-author">佐藤 花子</span>
+                  </div>
+                  <div class="version-item">
+                    <div class="version-info">
+                      <span class="version-label">v2</span>
+                      <span class="version-time">09:18 自動保存</span>
+                    </div>
+                    <button class="btn btn-sm btn-ghost">復元</button>
+                  </div>
+                  <div class="version-item">
+                    <div class="version-info">
+                      <span class="version-label">v1</span>
+                      <span class="version-time">09:15 AI生成</span>
+                    </div>
+                    <button class="btn btn-sm btn-ghost">復元</button>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <div style="flex: 1;"></div>
+                <button class="btn btn-sm btn-outline">ダウンロード</button>
+                <button class="btn btn-sm btn-primary">保存</button>
+              </div>
             </div>
-
-            <div class="card-footer">
-              <button class="btn btn-outline">ダウンロード</button>
-              <button class="btn btn-primary">保存する</button>
-            </div>
-          </section>
+          </div>
         </div>
-
-        <!-- Version History -->
-        <section class="card mt-lg">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">保存履歴</h3>
-              <p class="card-subtitle">過去のバージョンに戻せます</p>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="item-grid">
-              <label class="item-card" style="cursor: pointer;">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">現在の内容</div>
-                    <div class="item-card-subtitle">09:25 手動保存</div>
-                  </div>
-                  <input type="radio" name="version" checked style="width: 20px; height: 20px;">
-                </div>
-              </label>
-
-              <label class="item-card" style="cursor: pointer;">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">AI自動生成 v2</div>
-                    <div class="item-card-subtitle">09:20 施設保存用</div>
-                  </div>
-                  <input type="radio" name="version" style="width: 20px; height: 20px;">
-                </div>
-              </label>
-
-              <label class="item-card" style="cursor: pointer;">
-                <div class="item-card-header">
-                  <div>
-                    <div class="item-card-title">AI自動生成 v1</div>
-                    <div class="item-card-subtitle">09:15 メール用</div>
-                  </div>
-                  <input type="radio" name="version" style="width: 20px; height: 20px;">
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-outline">選択したバージョンに戻す</button>
-          </div>
-        </section>
       </div>
     </main>
   </div>
 
-  <script>
-    // Group selection interaction
-    document.querySelectorAll('.group-select-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.group-select-item').forEach(i => i.classList.remove('is-selected'));
-        this.classList.add('is-selected');
-      });
-    });
+  <!-- Recording Settings Modal -->
+  <div class="modal-overlay" id="recordModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">録音設定</span>
+        <button class="modal-close" onclick="closeRecordModal()">×</button>
+      </div>
+      <div class="modal-body" style="padding: 0;">
+        <div class="settings-section">
+          <div class="settings-label">処理モード</div>
+          <div class="settings-row">
+            <span class="settings-row-label">オンプレミス</span>
+            <button class="toggle-sm is-on" onclick="this.classList.toggle('is-on')"></button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-label">辞書</div>
+          <div class="settings-row">
+            <span class="settings-row-label">辞書を使用</span>
+            <button class="toggle-sm is-on" onclick="this.classList.toggle('is-on')"></button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-label">グループ</div>
+          <div class="group-quick-select">
+            <span class="group-chip is-selected" onclick="selectGroupModal(this)">G1</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G2</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G3</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G4</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G5</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G6</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G7</span>
+            <span class="group-chip" onclick="selectGroupModal(this)">G8</span>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-label">場所</div>
+          <select class="form-select" style="font-size: var(--text-xs); min-height: 28px; padding: var(--space-xs);">
+            <option>ナースステーション</option>
+            <option>1階フロア</option>
+            <option>2階フロア</option>
+            <option>相談室</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer" id="recordModalFooter" style="flex-direction: column;">
+        <!-- Dynamic button inserted by JS -->
+      </div>
+    </div>
+  </div>
 
-    // Segment control interaction
-    document.querySelectorAll('.segment-control-item').forEach(item => {
-      item.addEventListener('click', function() {
-        this.parentElement.querySelectorAll('.segment-control-item').forEach(i => i.classList.remove('is-active'));
+  <!-- Dictionary Modal -->
+  <div class="modal-overlay" id="dictModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">辞書に追加</span>
+        <button class="modal-close" onclick="closeDictModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">登録する言葉</label>
+          <input type="text" class="form-input" id="dictWordInput" placeholder="例：山田太郎さん">
+        </div>
+        <div class="form-group">
+          <label class="form-label">読み方（ひらがな）</label>
+          <input type="text" class="form-input" id="dictReadingInput" placeholder="やまだたろうさん">
+        </div>
+        <div class="form-group">
+          <label class="form-label">種類</label>
+          <div class="category-pills">
+            <button class="category-pill is-selected" data-color="primary" data-value="user" onclick="selectDictCategory(this)">利用者名</button>
+            <button class="category-pill" data-color="success" data-value="medicine" onclick="selectDictCategory(this)">薬の名前</button>
+            <button class="category-pill" data-color="neutral" data-value="term" onclick="selectDictCategory(this)">専門用語</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeDictModal()">キャンセル</button>
+        <button class="btn btn-primary" onclick="submitDictWord()">登録</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isRecording = false;
+    let recordingSeconds = 0;
+    let recordingInterval = null;
+
+    let recordModalMode = 'record'; // 'record' or 'edit'
+
+    // Handle record button click
+    function handleRecordClick() {
+      if (isRecording) {
+        stopRecording();
+      } else {
+        openRecordModal('record');
+      }
+    }
+
+    function openRecordModal(mode = 'record') {
+      recordModalMode = mode;
+      const footer = document.getElementById('recordModalFooter');
+      const title = document.querySelector('#recordModal .modal-title');
+
+      if (mode === 'edit') {
+        title.textContent = '録音設定';
+        footer.innerHTML = '<button class="btn btn-primary" style="width: 100%;" onclick="saveSettings()">保存</button>';
+      } else {
+        title.textContent = '録音設定';
+        footer.innerHTML = '<button class="start-record-btn" onclick="startRecordingFromModal()"><span class="record-dot"></span>録音を開始</button>';
+      }
+
+      document.getElementById('recordModal').classList.add('is-open');
+    }
+
+    function closeRecordModal() {
+      document.getElementById('recordModal').classList.remove('is-open');
+    }
+
+    function saveSettings() {
+      updateSettingsDisplay();
+      closeRecordModal();
+    }
+
+    function startRecordingFromModal() {
+      updateSettingsDisplay();
+      closeRecordModal();
+      startRecording();
+    }
+
+    function updateSettingsDisplay() {
+      // Get values from modal
+      const modal = document.getElementById('recordModal');
+      const toggles = modal.querySelectorAll('.toggle-sm');
+      const modeToggle = toggles[0];
+      const dictToggle = toggles[1];
+      const selectedGroup = modal.querySelector('.group-chip.is-selected');
+      const locationSelect = modal.querySelector('select');
+
+      // Update header tags
+      document.getElementById('tagMode').textContent = modeToggle.classList.contains('is-on') ? 'オンプレミス' : 'クラウド';
+
+      const dictTag = document.getElementById('tagDict');
+      if (dictToggle.classList.contains('is-on')) {
+        dictTag.textContent = '辞書ON';
+        dictTag.classList.add('is-highlight');
+      } else {
+        dictTag.textContent = '辞書OFF';
+        dictTag.classList.remove('is-highlight');
+      }
+
+      document.getElementById('tagGroup').textContent = selectedGroup ? selectedGroup.textContent : 'G1';
+      document.getElementById('tagLocation').textContent = locationSelect ? locationSelect.value : 'ナースステーション';
+    }
+
+    function startRecording() {
+      isRecording = true;
+      const btn = document.getElementById('recordBtn');
+      const label = document.getElementById('recordLabel');
+      const time = document.getElementById('recordingTime');
+      const status = document.getElementById('transcriptStatus');
+      const statusText = document.getElementById('transcriptStatusText');
+
+      btn.classList.add('is-recording');
+      label.textContent = '停止';
+      time.style.display = 'inline';
+      status.classList.add('is-recording');
+      statusText.textContent = '録音中';
+      recordingInterval = setInterval(() => {
+        recordingSeconds++;
+        const mins = Math.floor(recordingSeconds / 60).toString().padStart(2, '0');
+        const secs = (recordingSeconds % 60).toString().padStart(2, '0');
+        time.textContent = mins + ':' + secs;
+      }, 1000);
+    }
+
+    function stopRecording() {
+      isRecording = false;
+      const btn = document.getElementById('recordBtn');
+      const label = document.getElementById('recordLabel');
+      const time = document.getElementById('recordingTime');
+      const status = document.getElementById('transcriptStatus');
+      const statusText = document.getElementById('transcriptStatusText');
+
+      btn.classList.remove('is-recording');
+      label.textContent = '録音開始';
+      time.style.display = 'none';
+      status.classList.remove('is-recording');
+      statusText.textContent = '待機中';
+      clearInterval(recordingInterval);
+      recordingSeconds = 0;
+    }
+
+    function selectGroupModal(el) {
+      el.closest('.group-quick-select').querySelectorAll('.group-chip').forEach(c => c.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+    }
+
+    // Summary tab switching
+    function switchSummaryTab(btn, tab) {
+      document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('is-active'));
+      btn.classList.add('is-active');
+
+      document.getElementById('summaryContent').style.display = tab === 'summary' ? 'flex' : 'none';
+      document.getElementById('historyContent').style.display = tab === 'history' ? 'flex' : 'none';
+      document.getElementById('formatSelect').style.display = tab === 'summary' ? 'block' : 'none';
+    }
+
+    // Recording tab selection
+    document.querySelectorAll('.recording-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.recording-tab').forEach(t => t.classList.remove('is-active'));
         this.classList.add('is-active');
       });
     });
+
+    // Dictionary Modal
+    function openDictModal(word = '') {
+      document.getElementById('dictWordInput').value = word;
+      document.getElementById('dictReadingInput').value = '';
+      document.querySelectorAll('.category-pill').forEach((p, i) => {
+        p.classList.toggle('is-selected', i === 0);
+      });
+      document.getElementById('dictModal').classList.add('is-open');
+    }
+
+    function closeDictModal() {
+      document.getElementById('dictModal').classList.remove('is-open');
+    }
+
+    function selectDictCategory(el) {
+      document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+    }
+
+    function submitDictWord() {
+      // Demo: just close modal
+      closeDictModal();
+    }
+
+    // Close modal on overlay click
+    document.getElementById('dictModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDictModal();
+    });
+    document.getElementById('recordModal').addEventListener('click', function(e) {
+      if (e.target === this) closeRecordModal();
+    });
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeDictModal();
+        closeRecordModal();
+      }
+    });
+
+    // Editor toolbar functions
+    function toggleBold() {
+      const textarea = document.getElementById('summaryTextarea');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+      const selected = text.substring(start, end);
+
+      if (selected) {
+        const newText = text.substring(0, start) + '**' + selected + '**' + text.substring(end);
+        textarea.value = newText;
+        textarea.focus();
+        textarea.setSelectionRange(start + 2, end + 2);
+      }
+    }
+
+    function insertBullet() {
+      const textarea = document.getElementById('summaryTextarea');
+      const start = textarea.selectionStart;
+      const text = textarea.value;
+
+      // Find the start of the current line
+      let lineStart = start;
+      while (lineStart > 0 && text[lineStart - 1] !== '\n') {
+        lineStart--;
+      }
+
+      // Insert bullet at the start of the line
+      const newText = text.substring(0, lineStart) + '・' + text.substring(lineStart);
+      textarea.value = newText;
+      textarea.focus();
+      textarea.setSelectionRange(start + 1, start + 1);
+    }
   </script>
 </body>
 </html>

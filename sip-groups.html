@@ -3,86 +3,102 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>通話モニター - グループ一覧</title>
+  <title>SIPリアルタイム監視 - グループ一覧</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Status Header Bar */
-    .status-header {
+    /* Filter Tabs */
+    .filter-tabs {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-md);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--surface);
+      gap: 2px;
+      background: var(--surface-alt);
+      padding: 2px;
       border-radius: var(--radius);
-      border: 1px solid var(--border);
-      margin-bottom: var(--space-md);
+      width: fit-content;
     }
 
-    .status-header-main {
-      display: flex;
-      align-items: center;
-      gap: var(--space-lg);
-    }
-
-    .status-metric {
-      display: flex;
-      align-items: baseline;
-      gap: var(--space-xs);
-    }
-
-    .status-metric-value {
-      font-size: var(--text-xl);
-      font-weight: 700;
-      color: var(--primary);
-      line-height: 1;
-    }
-
-    .status-metric-label {
+    .filter-tab {
+      padding: 6px 12px;
       font-size: var(--text-xs);
-      color: var(--text-secondary);
       font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .status-meta {
+    .filter-tab:hover {
+      color: var(--text);
+    }
+
+    .filter-tab.is-active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      margin-left: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    .filter-tab.is-active .filter-count {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Search Row */
+    .search-row {
       display: flex;
       align-items: center;
       gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
     }
 
-    .status-meta-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-      font-size: var(--text-xs);
-      color: var(--text-secondary);
-    }
-
+    /* System Status in Header */
     .system-status {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
+      gap: 6px;
+      padding: 6px 12px;
       background: var(--success-light);
       color: var(--success);
-      border-radius: 999px;
+      border-radius: var(--radius);
       font-weight: 600;
-      font-size: 10px;
+      font-size: var(--text-xs);
     }
 
     .system-status-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       background: var(--success);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
 
-    /* Group Grid - Card layout for 16 groups */
+    .system-status-time {
+      margin-left: var(--space-sm);
+      padding-left: var(--space-sm);
+      border-left: 1px solid var(--success);
+      opacity: 0.8;
+    }
+
+    /* Group Grid */
     .group-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-sm);
+      gap: var(--space-md);
     }
 
     @media (max-width: 1200px) {
@@ -107,21 +123,38 @@
     .group-card {
       background: var(--surface);
       border-radius: var(--radius);
-      padding: var(--space-sm);
+      padding: var(--space-md);
       cursor: pointer;
       transition: all 0.15s ease;
       border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
     }
 
     .group-card:hover {
       border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .group-card.is-offline {
+      opacity: 0.6;
+    }
+
+    .group-card.is-offline:hover {
+      opacity: 1;
     }
 
     .group-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--space-sm);
+    }
+
+    .group-card-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
     }
 
     .group-card-icon {
@@ -137,10 +170,14 @@
       font-size: var(--text-sm);
     }
 
+    .group-card-icon.is-offline {
+      background: var(--surface-alt);
+      color: var(--text-muted);
+    }
+
     .group-card-name {
       font-weight: 600;
       font-size: var(--text-sm);
-      margin-bottom: 2px;
     }
 
     /* Status Badge */
@@ -148,7 +185,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 6px;
+      padding: 2px 8px;
       border-radius: 999px;
       font-size: 10px;
       font-weight: 600;
@@ -166,7 +203,7 @@
 
     .group-status.is-offline {
       background: var(--surface-alt);
-      color: var(--text-secondary);
+      color: var(--text-muted);
     }
 
     .group-status-dot {
@@ -180,22 +217,41 @@
       animation: pulse 2s infinite;
     }
 
-    /* Session count */
-    .group-card-sessions {
+    /* Session Info */
+    .group-card-body {
       display: flex;
       align-items: center;
-      gap: var(--space-xs);
+      justify-content: space-between;
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border);
+    }
+
+    .session-count {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
       font-size: var(--text-xs);
       color: var(--text-secondary);
-      margin-bottom: var(--space-xs);
     }
 
-    .group-card-sessions strong {
+    .session-count strong {
+      font-size: var(--text-md);
       color: var(--text);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Progress bar */
+    .session-total {
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .session-bar-wrap {
+      flex: 1;
+      max-width: 80px;
+      margin-left: var(--space-sm);
+    }
+
     .session-bar {
       width: 100%;
       height: 4px;
@@ -206,7 +262,6 @@
 
     .session-bar-fill {
       height: 100%;
-      background: var(--primary);
       border-radius: 999px;
       transition: width 0.3s ease;
     }
@@ -220,17 +275,52 @@
     }
 
     /* Click hint */
-    .group-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      margin-top: var(--space-sm);
-      font-size: var(--text-xs);
+    .group-card-arrow {
+      font-size: 10px;
       color: var(--text-muted);
+      transition: all 0.15s ease;
     }
 
-    .group-card:hover .group-card-footer {
+    .group-card:hover .group-card-arrow {
       color: var(--primary);
+      transform: translateX(2px);
+    }
+
+    /* Legend Inline */
+    .legend-inline {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-left: auto;
+    }
+
+    .legend-item {
+      position: relative;
+      cursor: help;
+    }
+
+    .legend-item .legend-tooltip {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.15s ease;
+      z-index: 100;
+    }
+
+    .legend-item:hover .legend-tooltip {
+      opacity: 1;
+      visibility: visible;
     }
   </style>
 </head>
@@ -250,7 +340,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item is-active">
-            通話モニター
+            SIPリアルタイム監視
           </a>
           <a href="call-logs.html" class="nav-item">
             通話履歴
@@ -284,10 +374,15 @@
       <header class="main-header">
         <div class="main-header-inner">
           <div>
-            <h1 class="page-title">通話モニター</h1>
+            <h1 class="page-title">SIPリアルタイム監視</h1>
             <p class="page-description">グループ別のリアルタイム接続状況</p>
           </div>
           <div class="header-actions">
+            <div class="system-status">
+              <span class="system-status-dot"></span>
+              正常稼働中
+              <span class="system-status-time">更新: <strong id="update-time">2秒前</strong></span>
+            </div>
             <button class="btn btn-outline" onclick="location.reload()">
               更新
             </button>
@@ -296,381 +391,462 @@
       </header>
 
       <div class="main-content">
-        <!-- Status Header -->
-        <div class="status-header">
-          <div class="status-header-main">
-            <div class="status-metric">
-              <span class="status-metric-value">11</span>
-              <span class="status-metric-label">オンライン子機</span>
-            </div>
-            <div class="status-metric">
-              <span class="status-metric-value">8/16</span>
-              <span class="status-metric-label">アクティブグループ</span>
-            </div>
-            <div class="system-status">
-              <span class="system-status-dot"></span>
-              正常稼働
-            </div>
+        <!-- Filter Row -->
+        <div class="search-row">
+          <div class="filter-tabs">
+            <button class="filter-tab is-active" data-filter="all">すべて <span class="filter-count">16</span></button>
+            <button class="filter-tab" data-filter="active">通話中 <span class="filter-count">2</span></button>
+            <button class="filter-tab" data-filter="online">待機中 <span class="filter-count">3</span></button>
+            <button class="filter-tab" data-filter="offline">オフライン <span class="filter-count">11</span></button>
           </div>
-          <div class="status-meta">
-            <div class="status-meta-item">
-              最終更新 <strong>2秒前</strong>
+          <div class="legend-inline">
+            <div class="legend-item">
+              <span class="group-status is-active"><span class="group-status-dot"></span>通話中</span>
+              <span class="legend-tooltip">現在通話が行われている</span>
+            </div>
+            <div class="legend-item">
+              <span class="group-status is-online"><span class="group-status-dot"></span>待機中</span>
+              <span class="legend-tooltip">接続中だが通話なし</span>
+            </div>
+            <div class="legend-item">
+              <span class="group-status is-offline"><span class="group-status-dot"></span>オフライン</span>
+              <span class="legend-tooltip">接続している子機なし</span>
             </div>
           </div>
         </div>
 
-        <!-- Group Grid - 16 groups -->
-        <section class="card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">グループ一覧</h3>
-              <p class="card-subtitle">グループをクリックして子機一覧を表示（全16グループ）</p>
+        <!-- Group Grid -->
+        <div class="group-grid">
+          <!-- G1 - Active -->
+          <div class="group-card" data-status="active" onclick="window.location.href='realtime.html?group=G1'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon">G1</div>
+                <span class="group-card-name">グループ1</span>
+              </div>
+              <span class="group-status is-active">
+                <span class="group-status-dot"></span>
+                通話中
+              </span>
             </div>
-          </div>
-          <div class="card-body">
-            <div class="group-grid">
-              <!-- G1 - Active -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G1'">
-                <div class="group-card-header">
-                  <div class="group-card-icon">G1</div>
-                  <span class="group-status is-active">
-                    <span class="group-status-dot"></span>
-                    アクティブ
-                  </span>
-                </div>
-                <div class="group-card-name">グループ1</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>3</strong> 接続中
-                </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>3</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
                 <div class="session-bar">
                   <div class="session-bar-fill is-active" style="width: 60%;"></div>
                 </div>
-                <div class="group-card-footer">詳細を見る →</div>
               </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
 
-              <!-- G2 - Online -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G2'">
-                <div class="group-card-header">
-                  <div class="group-card-icon">G2</div>
-                  <span class="group-status is-online">
-                    <span class="group-status-dot"></span>
-                    オンライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ2</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>4</strong> 接続中
-                </div>
+          <!-- G2 - Online -->
+          <div class="group-card" data-status="online" onclick="window.location.href='realtime.html?group=G2'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon">G2</div>
+                <span class="group-card-name">グループ2</span>
+              </div>
+              <span class="group-status is-online">
+                <span class="group-status-dot"></span>
+                待機中
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>4</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
                 <div class="session-bar">
-                  <div class="session-bar-fill is-online" style="width: 50%;"></div>
+                  <div class="session-bar-fill is-online" style="width: 80%;"></div>
                 </div>
-                <div class="group-card-footer">詳細を見る →</div>
               </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
 
-              <!-- G3 - Active -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G3'">
-                <div class="group-card-header">
-                  <div class="group-card-icon">G3</div>
-                  <span class="group-status is-active">
-                    <span class="group-status-dot"></span>
-                    アクティブ
-                  </span>
-                </div>
-                <div class="group-card-name">グループ3</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>2</strong> 接続中
-                </div>
+          <!-- G3 - Active -->
+          <div class="group-card" data-status="active" onclick="window.location.href='realtime.html?group=G3'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon">G3</div>
+                <span class="group-card-name">グループ3</span>
+              </div>
+              <span class="group-status is-active">
+                <span class="group-status-dot"></span>
+                通話中
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>2</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
                 <div class="session-bar">
                   <div class="session-bar-fill is-active" style="width: 40%;"></div>
                 </div>
-                <div class="group-card-footer">詳細を見る →</div>
               </div>
-
-              <!-- G4 - Online -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G4'">
-                <div class="group-card-header">
-                  <div class="group-card-icon">G4</div>
-                  <span class="group-status is-online">
-                    <span class="group-status-dot"></span>
-                    オンライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ4</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>1</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill is-online" style="width: 20%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G5 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G5'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G5</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ5</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G6 - Online -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G6'">
-                <div class="group-card-header">
-                  <div class="group-card-icon">G6</div>
-                  <span class="group-status is-online">
-                    <span class="group-status-dot"></span>
-                    オンライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ6</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>1</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill is-online" style="width: 20%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G7 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G7'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G7</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ7</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G8 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G8'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G8</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ8</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G9 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G9'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G9</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ9</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G10 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G10'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G10</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ10</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G11 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G11'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G11</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ11</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G12 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G12'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G12</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ12</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G13 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G13'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G13</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ13</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G14 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G14'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G14</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ14</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G15 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G15'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G15</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ15</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
-
-              <!-- G16 - Offline -->
-              <div class="group-card" onclick="window.location.href='realtime.html?group=G16'">
-                <div class="group-card-header">
-                  <div class="group-card-icon" style="background: var(--surface-alt); color: var(--text-secondary);">G16</div>
-                  <span class="group-status is-offline">
-                    <span class="group-status-dot"></span>
-                    オフライン
-                  </span>
-                </div>
-                <div class="group-card-name">グループ16</div>
-                <div class="group-card-sessions">
-                  <span>子機:</span> <strong>0</strong> 接続中
-                </div>
-                <div class="session-bar">
-                  <div class="session-bar-fill" style="width: 0%;"></div>
-                </div>
-                <div class="group-card-footer">詳細を見る →</div>
-              </div>
+              <span class="group-card-arrow">→</span>
             </div>
           </div>
-        </section>
 
-        <!-- Status Legend -->
-        <section class="filter-bar mt-lg" style="display: flex; gap: var(--space-xl); flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: var(--space-sm);">
-            <span class="group-status is-active">
-              <span class="group-status-dot"></span>
-              アクティブ
-            </span>
-            <span class="text-sm text-secondary">通話中の子機がある</span>
+          <!-- G4 - Online -->
+          <div class="group-card" data-status="online" onclick="window.location.href='realtime.html?group=G4'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon">G4</div>
+                <span class="group-card-name">グループ4</span>
+              </div>
+              <span class="group-status is-online">
+                <span class="group-status-dot"></span>
+                待機中
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>1</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill is-online" style="width: 20%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
           </div>
-          <div style="display: flex; align-items: center; gap: var(--space-sm);">
-            <span class="group-status is-online">
-              <span class="group-status-dot"></span>
-              オンライン
-            </span>
-            <span class="text-sm text-secondary">接続中だが通話なし</span>
+
+          <!-- G5 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G5'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G5</div>
+                <span class="group-card-name">グループ5</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
           </div>
-          <div style="display: flex; align-items: center; gap: var(--space-sm);">
-            <span class="group-status is-offline">
-              <span class="group-status-dot"></span>
-              オフライン
-            </span>
-            <span class="text-sm text-secondary">接続している子機なし</span>
+
+          <!-- G6 - Online -->
+          <div class="group-card" data-status="online" onclick="window.location.href='realtime.html?group=G6'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon">G6</div>
+                <span class="group-card-name">グループ6</span>
+              </div>
+              <span class="group-status is-online">
+                <span class="group-status-dot"></span>
+                待機中
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>1</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill is-online" style="width: 20%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
           </div>
-        </section>
+
+          <!-- G7 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G7'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G7</div>
+                <span class="group-card-name">グループ7</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G8 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G8'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G8</div>
+                <span class="group-card-name">グループ8</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G9 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G9'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G9</div>
+                <span class="group-card-name">グループ9</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G10 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G10'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G10</div>
+                <span class="group-card-name">グループ10</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G11 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G11'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G11</div>
+                <span class="group-card-name">グループ11</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G12 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G12'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G12</div>
+                <span class="group-card-name">グループ12</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G13 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G13'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G13</div>
+                <span class="group-card-name">グループ13</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G14 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G14'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G14</div>
+                <span class="group-card-name">グループ14</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G15 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G15'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G15</div>
+                <span class="group-card-name">グループ15</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+
+          <!-- G16 - Offline -->
+          <div class="group-card is-offline" data-status="offline" onclick="window.location.href='realtime.html?group=G16'">
+            <div class="group-card-header">
+              <div class="group-card-title">
+                <div class="group-card-icon is-offline">G16</div>
+                <span class="group-card-name">グループ16</span>
+              </div>
+              <span class="group-status is-offline">
+                <span class="group-status-dot"></span>
+                オフライン
+              </span>
+            </div>
+            <div class="group-card-body">
+              <div class="session-count">
+                <strong>0</strong><span class="session-total">/ 5</span> 台
+              </div>
+              <div class="session-bar-wrap">
+                <div class="session-bar">
+                  <div class="session-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <span class="group-card-arrow">→</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
 
   <script>
-    // Simulate real-time update indicator
+    // Filter functionality
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('is-active'));
+        this.classList.add('is-active');
+
+        const filter = this.dataset.filter;
+        document.querySelectorAll('.group-card').forEach(card => {
+          if (filter === 'all' || card.dataset.status === filter) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Update time counter
+    let seconds = 2;
     setInterval(() => {
-      const updateText = document.querySelector('.status-meta-item strong');
-      if (updateText && updateText.textContent.includes('秒前')) {
-        const current = parseInt(updateText.textContent);
-        updateText.textContent = (current + 1) + '秒前';
+      seconds++;
+      const updateEl = document.getElementById('update-time');
+      if (updateEl) {
+        updateEl.textContent = seconds + '秒前';
       }
     }, 1000);
   </script>

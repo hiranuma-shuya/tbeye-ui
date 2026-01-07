@@ -5,6 +5,197 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>通話履歴 - 過去の記録を探す</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Filter Row */
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    /* Search Input */
+    .search-input-wrap {
+      position: relative;
+      width: 200px;
+    }
+
+    .search-input-wrap .form-input {
+      padding-left: 32px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* Date Range */
+    .date-range {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .date-range .form-input {
+      width: 130px;
+    }
+
+    .date-range-sep {
+      color: var(--text-muted);
+      font-size: var(--text-xs);
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--surface-alt);
+      padding: 2px;
+      border-radius: var(--radius);
+    }
+
+    .filter-tab {
+      padding: 6px 12px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-tab:hover {
+      color: var(--text);
+    }
+
+    .filter-tab.is-active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      margin-left: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    .filter-tab.is-active .filter-count {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Call Route Display */
+    .call-route {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--text-sm);
+    }
+
+    .call-route-from,
+    .call-route-to {
+      padding: 2px 6px;
+      background: var(--surface-alt);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+    }
+
+    .call-route-arrow {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+
+    /* Terminal Display */
+    .terminal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      font-family: monospace;
+    }
+
+    .terminal-sep {
+      color: var(--text-muted);
+    }
+
+    /* Duration */
+    .duration {
+      font-variant-numeric: tabular-nums;
+      font-size: var(--text-sm);
+    }
+
+    /* Date Display */
+    .date-display {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .date-main {
+      font-size: var(--text-sm);
+    }
+
+    .date-time {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Minutes Button Styles */
+    .btn-minutes-view {
+      background: var(--success-light);
+      color: var(--success);
+      border: none;
+    }
+
+    .btn-minutes-view:hover {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-minutes-create {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+    }
+
+    .btn-minutes-create:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Table Actions - override flex to fix height */
+    td.table-actions {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    td.table-actions .btn {
+      margin-left: 4px;
+    }
+
+    td.table-actions .btn:first-child {
+      margin-left: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="app">
@@ -22,7 +213,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item">
-            通話モニター
+            SIPリアルタイム監視
           </a>
           <a href="call-logs.html" class="nav-item is-active">
             通話履歴
@@ -66,30 +257,27 @@
       </header>
 
       <div class="main-content">
-        <!-- Search Filters -->
-        <section class="filter-bar mb-lg">
-          <div class="form-row" style="align-items: flex-end;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">開始日</label>
-              <input type="date" class="form-input">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">終了日</label>
-              <input type="date" class="form-input">
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label">場所</label>
-              <select class="form-select">
-                <option>すべて</option>
-                <option>ナースステーション</option>
-                <option>1階</option>
-                <option>2階</option>
-                <option>3階</option>
-              </select>
-            </div>
-            <button class="btn btn-primary">検索</button>
+        <!-- Filter Row -->
+        <div class="filter-row">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-input" placeholder="端末番号で検索...">
           </div>
-        </section>
+
+          <div class="date-range">
+            <input type="date" class="form-input" value="2025-01-01">
+            <span class="date-range-sep">〜</span>
+            <input type="date" class="form-input" value="2025-01-08">
+          </div>
+
+          <div class="filter-tabs">
+            <button class="filter-tab is-active" onclick="filterLocation(this)">すべて <span class="filter-count">128</span></button>
+            <button class="filter-tab" onclick="filterLocation(this)">ナースST <span class="filter-count">32</span></button>
+            <button class="filter-tab" onclick="filterLocation(this)">1階 <span class="filter-count">28</span></button>
+            <button class="filter-tab" onclick="filterLocation(this)">2階 <span class="filter-count">35</span></button>
+            <button class="filter-tab" onclick="filterLocation(this)">3階 <span class="filter-count">33</span></button>
+          </div>
+        </div>
 
         <!-- Call History Table -->
         <section class="table-container">
@@ -100,69 +288,146 @@
                 <th>通話経路</th>
                 <th>端末</th>
                 <th>時間</th>
-                <th>議事録</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>今日 09:00</td>
-                <td>1階 相談室 → ナースステーション</td>
-                <td>2001 ↔ 2003</td>
-                <td>30分</td>
-                <td><span class="badge badge-success">あり</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">今日</span>
+                    <span class="date-time">09:00</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">1階 相談室</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">ナースステーション</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2001 <span class="terminal-sep">↔</span> 2003</span>
+                </td>
+                <td><span class="duration">30分</span></td>
                 <td class="table-actions">
-                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">見る</a>
+                  <button class="btn btn-sm btn-minutes-view" onclick="location.href='ai-minutes.html'">議事録を確認</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
               <tr>
-                <td>今日 08:15</td>
-                <td>2階 居室A → 2階 スタッフルーム</td>
-                <td>2004 ↔ 2005</td>
-                <td>2分</td>
-                <td><span class="badge badge-neutral">なし</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">今日</span>
+                    <span class="date-time">08:15</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">2階 居室A</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">2階 スタッフルーム</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2004 <span class="terminal-sep">↔</span> 2005</span>
+                </td>
+                <td><span class="duration">2分</span></td>
                 <td class="table-actions">
-                  <button class="btn btn-sm btn-outline">作成</button>
+                  <button class="btn btn-sm btn-minutes-create">議事録を作成</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
               <tr>
-                <td>昨日 14:30</td>
-                <td>ナースステーション → 外線</td>
-                <td>2003 ↔ 外線</td>
-                <td>15分</td>
-                <td><span class="badge badge-success">あり</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">昨日</span>
+                    <span class="date-time">14:30</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">ナースステーション</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">外線</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2003 <span class="terminal-sep">↔</span> 外線</span>
+                </td>
+                <td><span class="duration">15分</span></td>
                 <td class="table-actions">
-                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">見る</a>
+                  <button class="btn btn-sm btn-minutes-view" onclick="location.href='ai-minutes.html'">議事録を確認</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
               <tr>
-                <td>昨日 10:00</td>
-                <td>3階 ホール → 1階 玄関</td>
-                <td>2008 ↔ 2002</td>
-                <td>5分</td>
-                <td><span class="badge badge-neutral">なし</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">昨日</span>
+                    <span class="date-time">10:00</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">3階 ホール</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">1階 玄関</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2008 <span class="terminal-sep">↔</span> 2002</span>
+                </td>
+                <td><span class="duration">5分</span></td>
                 <td class="table-actions">
-                  <button class="btn btn-sm btn-outline">作成</button>
+                  <button class="btn btn-sm btn-minutes-create">議事録を作成</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
               <tr>
-                <td>2日前 16:20</td>
-                <td>2階 スタッフルーム → ナースステーション</td>
-                <td>2005 ↔ 2003</td>
-                <td>15分</td>
-                <td><span class="badge badge-success">あり</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">1/6</span>
+                    <span class="date-time">16:20</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">2階 スタッフルーム</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">ナースステーション</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2005 <span class="terminal-sep">↔</span> 2003</span>
+                </td>
+                <td><span class="duration">15分</span></td>
                 <td class="table-actions">
-                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">見る</a>
+                  <button class="btn btn-sm btn-minutes-view" onclick="location.href='ai-minutes.html'">議事録を確認</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
               <tr>
-                <td>2日前 09:45</td>
-                <td>1階 廊下 → 2階 居室B</td>
-                <td>2006 ↔ 2007</td>
-                <td>3分</td>
-                <td><span class="badge badge-neutral">なし</span></td>
+                <td>
+                  <div class="date-display">
+                    <span class="date-main">1/6</span>
+                    <span class="date-time">09:45</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="call-route">
+                    <span class="call-route-from">1階 廊下</span>
+                    <span class="call-route-arrow">→</span>
+                    <span class="call-route-to">2階 居室B</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="terminal-badge">2006 <span class="terminal-sep">↔</span> 2007</span>
+                </td>
+                <td><span class="duration">3分</span></td>
                 <td class="table-actions">
-                  <button class="btn btn-sm btn-outline">作成</button>
+                  <button class="btn btn-sm btn-minutes-create">議事録を作成</button>
+                  <button class="btn btn-sm btn-ghost">詳細</button>
                 </td>
               </tr>
             </tbody>
@@ -176,5 +441,13 @@
       </div>
     </main>
   </div>
+
+  <script>
+    function filterLocation(btn) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      // Demo: filter logic would go here
+    }
+  </script>
 </body>
 </html>
