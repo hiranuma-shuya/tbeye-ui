@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>通話履歴 - 過去の記録を探す</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">Logo Here</div>
+        <div class="facility-name">TBeye介護施設</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">メイン機能</div>
+          <a href="ai-minutes.html" class="nav-item">
+            AI議事録
+          </a>
+          <a href="sip-groups.html" class="nav-item">
+            SIP監視
+          </a>
+          <a href="realtime.html" class="nav-item">
+            通話状況
+          </a>
+          <a href="call-logs.html" class="nav-item is-active">
+            通話履歴
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">管理</div>
+          <a href="staff.html" class="nav-item">
+            ユーザー管理
+          </a>
+          <a href="dictionary.html" class="nav-item">
+            辞書・用語
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">佐</div>
+          <div class="user-info">
+            <div class="user-name">佐藤 花子</div>
+            <div class="user-role">介護スタッフ</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header class="main-header">
+        <div class="main-header-inner">
+          <div>
+            <h1 class="page-title">通話履歴</h1>
+            <p class="page-description">過去の通話記録を検索・確認できます</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-outline">CSVダウンロード</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <!-- Search Filters -->
+        <section class="card mb-lg">
+          <div class="card-header">
+            <h3 class="card-title">検索条件</h3>
+            <span class="badge badge-neutral">128件の記録</span>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">開始日</label>
+                <input type="date" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">終了日</label>
+                <input type="date" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">場所</label>
+                <select class="form-select">
+                  <option>すべて</option>
+                  <option>ナースステーション</option>
+                  <option>1階</option>
+                  <option>2階</option>
+                  <option>3階</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-outline">条件をクリア</button>
+            <button class="btn btn-primary">検索</button>
+          </div>
+        </section>
+
+        <!-- Call History List -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">通話一覧</h3>
+              <p class="card-subtitle">新しい順に表示</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="item-grid">
+              <!-- Call Record Cards -->
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">1階 相談室 → ナースステーション</div>
+                    <div class="item-card-subtitle">今日 09:00 - 09:30（30分）</div>
+                  </div>
+                  <span class="badge badge-success">議事録あり</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2001 ↔ 2003</p>
+                </div>
+                <div class="item-card-footer">
+                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">議事録を見る</a>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">2階 居室A → 2階 スタッフルーム</div>
+                    <div class="item-card-subtitle">今日 08:15 - 08:17（2分）</div>
+                  </div>
+                  <span class="badge badge-neutral">議事録なし</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2004 ↔ 2005</p>
+                </div>
+                <div class="item-card-footer">
+                  <button class="btn btn-sm btn-outline">議事録を作成</button>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">ナースステーション → 外線</div>
+                    <div class="item-card-subtitle">昨日 14:30 - 14:45（15分）</div>
+                  </div>
+                  <span class="badge badge-success">議事録あり</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2003 ↔ 外線</p>
+                </div>
+                <div class="item-card-footer">
+                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">議事録を見る</a>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">3階 ホール → 1階 玄関</div>
+                    <div class="item-card-subtitle">昨日 10:00 - 10:05（5分）</div>
+                  </div>
+                  <span class="badge badge-neutral">議事録なし</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2008 ↔ 2002</p>
+                </div>
+                <div class="item-card-footer">
+                  <button class="btn btn-sm btn-outline">議事録を作成</button>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">2階 スタッフルーム → ナースステーション</div>
+                    <div class="item-card-subtitle">2日前 16:20 - 16:35（15分）</div>
+                  </div>
+                  <span class="badge badge-success">議事録あり</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2005 ↔ 2003</p>
+                </div>
+                <div class="item-card-footer">
+                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">議事録を見る</a>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+
+              <div class="item-card">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">1階 廊下 → 2階 居室B</div>
+                    <div class="item-card-subtitle">2日前 09:45 - 09:48（3分）</div>
+                  </div>
+                  <span class="badge badge-neutral">議事録なし</span>
+                </div>
+                <div class="item-card-body">
+                  <p>端末: 2006 ↔ 2007</p>
+                </div>
+                <div class="item-card-footer">
+                  <button class="btn btn-sm btn-outline">議事録を作成</button>
+                  <button class="btn btn-sm btn-outline">詳細</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pagination">
+            <button class="btn btn-sm btn-outline">← 前へ</button>
+            <span class="pagination-info">1 / 22 ページ</span>
+            <button class="btn btn-sm btn-outline">次へ →</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

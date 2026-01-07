@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>G1 の通話状況 - グループ詳細</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+    .back-link:hover {
+      color: var(--primary);
+    }
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .group-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .device-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+    .device-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .device-card.is-active {
+      border-color: var(--primary);
+      background: var(--primary-lighter);
+    }
+    .device-card.is-offline {
+      opacity: 0.6;
+      background: var(--surface-darker);
+    }
+    .device-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .device-id {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .device-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .device-status.is-active {
+      background: var(--primary);
+      color: white;
+    }
+    .device-status.is-online {
+      background: var(--neutral-light);
+      color: var(--text-secondary);
+    }
+    .device-status.is-offline {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+    .device-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .device-status.is-active .device-status-dot {
+      background: white;
+      animation: pulse 1.5s infinite;
+    }
+    .device-status.is-online .device-status-dot {
+      background: var(--neutral);
+    }
+    .device-status.is-offline .device-status-dot {
+      background: var(--danger);
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .device-info {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .device-call-info {
+      background: var(--primary-lighter);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .device-call-time {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .device-call-target {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .device-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .status-legend {
+      display: flex;
+      gap: 24px;
+      padding: 16px 20px;
+      background: var(--surface-darker);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .status-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .status-legend-dot.is-active {
+      background: var(--primary);
+    }
+    .status-legend-dot.is-online {
+      background: var(--neutral);
+    }
+    .status-legend-dot.is-offline {
+      background: var(--danger);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">Logo Here</div>
+        <div class="facility-name">TBeye介護施設</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">メイン機能</div>
+          <a href="ai-minutes.html" class="nav-item">
+            AI議事録
+          </a>
+          <a href="sip-groups.html" class="nav-item is-active">
+            SIP監視
+          </a>
+          <a href="realtime.html" class="nav-item">
+            通話状況
+          </a>
+          <a href="call-logs.html" class="nav-item">
+            通話履歴
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">管理</div>
+          <a href="staff.html" class="nav-item">
+            ユーザー管理
+          </a>
+          <a href="dictionary.html" class="nav-item">
+            辞書・用語
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">佐</div>
+          <div class="user-info">
+            <div class="user-name">佐藤 花子</div>
+            <div class="user-role">介護スタッフ</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header class="main-header">
+        <div class="main-header-inner">
+          <div>
+            <a href="sip-groups.html" class="back-link">← グループ一覧に戻る</a>
+            <div class="group-header">
+              <div class="group-badge">G1</div>
+              <div>
+                <h1 class="page-title">G1 の通話状況</h1>
+                <p class="page-description">このグループの子機一覧と現在の状態</p>
+              </div>
+            </div>
+          </div>
+          <div class="header-actions">
+            <span class="badge badge-success">2秒前に更新</span>
+            <button class="btn btn-outline">更新</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <!-- Status Cards -->
+        <section class="grid grid-3 mb-lg">
+          <div class="status-card is-primary">
+            <div class="status-card-value">2</div>
+            <div class="status-card-label">アクティブ（通話中）</div>
+          </div>
+
+          <div class="status-card">
+            <div class="status-card-value">3</div>
+            <div class="status-card-label">オンライン（待機中）</div>
+          </div>
+
+          <div class="status-card is-danger">
+            <div class="status-card-value">1</div>
+            <div class="status-card-label">オフライン</div>
+          </div>
+        </section>
+
+        <!-- Status Legend -->
+        <div class="status-legend mb-lg">
+          <div class="status-legend-item">
+            <span class="status-legend-dot is-active"></span>
+            <span><strong>アクティブ</strong>: 現在通話中</span>
+          </div>
+          <div class="status-legend-item">
+            <span class="status-legend-dot is-online"></span>
+            <span><strong>オンライン</strong>: 接続中・待機中</span>
+          </div>
+          <div class="status-legend-item">
+            <span class="status-legend-dot is-offline"></span>
+            <span><strong>オフライン</strong>: 接続されていない</span>
+          </div>
+        </div>
+
+        <!-- Device List -->
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">子機一覧</h3>
+              <p class="card-subtitle">G1グループに所属する子機: 6台</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="item-grid">
+              <!-- Active Device 1 -->
+              <div class="device-card is-active">
+                <div class="device-header">
+                  <div class="device-id">子機 2001</div>
+                  <div class="device-status is-active">
+                    <span class="device-status-dot"></span>
+                    アクティブ
+                  </div>
+                </div>
+                <div class="device-call-info">
+                  <div class="device-call-time">02:34</div>
+                  <div class="device-call-target">子機 2003 と通話中</div>
+                </div>
+                <div class="device-actions">
+                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">AI議事録を開く</a>
+                </div>
+              </div>
+
+              <!-- Active Device 2 -->
+              <div class="device-card is-active">
+                <div class="device-header">
+                  <div class="device-id">子機 2003</div>
+                  <div class="device-status is-active">
+                    <span class="device-status-dot"></span>
+                    アクティブ
+                  </div>
+                </div>
+                <div class="device-call-info">
+                  <div class="device-call-time">02:34</div>
+                  <div class="device-call-target">子機 2001 と通話中</div>
+                </div>
+                <div class="device-actions">
+                  <a href="ai-minutes.html" class="btn btn-sm btn-primary">AI議事録を開く</a>
+                </div>
+              </div>
+
+              <!-- Online Device 1 -->
+              <div class="device-card">
+                <div class="device-header">
+                  <div class="device-id">子機 2002</div>
+                  <div class="device-status is-online">
+                    <span class="device-status-dot"></span>
+                    オンライン
+                  </div>
+                </div>
+                <div class="device-info">
+                  接続中・待機中
+                </div>
+              </div>
+
+              <!-- Online Device 2 -->
+              <div class="device-card">
+                <div class="device-header">
+                  <div class="device-id">子機 2004</div>
+                  <div class="device-status is-online">
+                    <span class="device-status-dot"></span>
+                    オンライン
+                  </div>
+                </div>
+                <div class="device-info">
+                  接続中・待機中
+                </div>
+              </div>
+
+              <!-- Online Device 3 -->
+              <div class="device-card">
+                <div class="device-header">
+                  <div class="device-id">子機 2005</div>
+                  <div class="device-status is-online">
+                    <span class="device-status-dot"></span>
+                    オンライン
+                  </div>
+                </div>
+                <div class="device-info">
+                  接続中・待機中
+                </div>
+              </div>
+
+              <!-- Offline Device -->
+              <div class="device-card is-offline">
+                <div class="device-header">
+                  <div class="device-id">子機 2006</div>
+                  <div class="device-status is-offline">
+                    <span class="device-status-dot"></span>
+                    オフライン
+                  </div>
+                </div>
+                <div class="device-info">
+                  1時間前から接続されていません
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

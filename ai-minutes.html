@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI議事録 - 会話を記録する</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Segment Control for On-prem/Cloud selection */
+    .segment-control {
+      display: inline-flex;
+      background: var(--surface-alt);
+      border-radius: var(--radius);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .segment-control-item {
+      padding: var(--space-sm) var(--space-lg);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .segment-control-item:hover {
+      color: var(--text);
+    }
+
+    .segment-control-item.is-active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Toggle Switch */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toggle-label-main {
+      font-weight: 700;
+      font-size: var(--text-base);
+    }
+
+    .toggle-label-sub {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 52px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border: none;
+      padding: 0;
+    }
+
+    .toggle-switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease;
+    }
+
+    .toggle-switch.is-on {
+      background: var(--primary);
+    }
+
+    .toggle-switch.is-on::after {
+      transform: translateX(24px);
+    }
+
+    /* Recording Options Panel */
+    .recording-options {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: var(--space-lg);
+    }
+
+    .recording-options-header {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .recording-options-header:hover {
+      background: var(--surface-alt);
+    }
+
+    .recording-options-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: 700;
+    }
+
+    .recording-options-toggle {
+      color: var(--text-secondary);
+      font-size: var(--text-lg);
+      transition: transform 0.2s ease;
+    }
+
+    .recording-options.is-expanded .recording-options-toggle {
+      transform: rotate(180deg);
+    }
+
+    .recording-options-body {
+      padding: var(--space-lg);
+      display: none;
+    }
+
+    .recording-options.is-expanded .recording-options-body {
+      display: block;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+
+    @media (max-width: 900px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-section {
+      background: var(--surface-alt);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+    }
+
+    .option-section-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Quick Dictionary Entry */
+    .quick-dict-form {
+      background: var(--primary-lighter);
+      border: 2px solid var(--primary-light);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+
+    .quick-dict-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-md);
+    }
+
+    .quick-dict-title {
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .quick-dict-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 120px 80px;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+
+    @media (max-width: 768px) {
+      .quick-dict-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .quick-dict-input {
+      padding: var(--space-sm) var(--space-md);
+      font-size: var(--text-sm);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      min-height: 40px;
+    }
+
+    .quick-dict-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* Current Settings Summary */
+    .current-settings {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--surface-alt);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+
+    .setting-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+
+    .setting-chip.is-active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Priority Slider */
+    .priority-input {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .priority-input input[type="number"] {
+      width: 60px;
+      padding: var(--space-sm);
+      font-size: var(--text-sm);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      min-height: 40px;
+    }
+
+    /* Group Selection */
+    .group-select-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .group-select-item {
+      padding: var(--space-md);
+      text-align: center;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--surface);
+      font-weight: 700;
+    }
+
+    .group-select-item:hover {
+      border-color: var(--primary);
+      background: var(--primary-lighter);
+    }
+
+    .group-select-item.is-selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .group-select-item input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">Logo Here</div>
+        <div class="facility-name">TBeye介護施設</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">メイン機能</div>
+          <a href="ai-minutes.html" class="nav-item is-active">
+            AI議事録
+          </a>
+          <a href="sip-groups.html" class="nav-item">
+            SIP監視
+          </a>
+          <a href="realtime.html" class="nav-item">
+            通話状況
+          </a>
+          <a href="call-logs.html" class="nav-item">
+            通話履歴
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">管理</div>
+          <a href="staff.html" class="nav-item">
+            ユーザー管理
+          </a>
+          <a href="dictionary.html" class="nav-item">
+            辞書・用語
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">佐</div>
+          <div class="user-info">
+            <div class="user-name">佐藤 花子</div>
+            <div class="user-role">介護スタッフ</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header class="main-header">
+        <div class="main-header-inner">
+          <div>
+            <h1 class="page-title">AI議事録</h1>
+            <p class="page-description">会話を録音して、自動で文字起こし・要約します</p>
+          </div>
+          <div class="header-actions">
+            <a href="dictionary.html" class="btn btn-outline">
+              辞書を編集
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-content">
+        <!-- Recording Panel -->
+        <section class="recording-panel mb-lg" id="recordingPanel">
+          <h2 class="recording-panel-title">録音を開始する</h2>
+          <p class="recording-panel-subtitle">
+            ボタンを押すと、会話の録音と文字起こしが始まります
+          </p>
+          <button class="recording-btn" id="recordBtn">
+            AI議事録をスタート
+          </button>
+        </section>
+
+        <!-- Recording Options - Collapsed by default -->
+        <section class="recording-options">
+          <div class="recording-options-header" onclick="this.parentElement.classList.toggle('is-expanded')">
+            <div class="recording-options-title">
+              録音オプション
+              <span class="badge badge-neutral">3項目設定済み</span>
+            </div>
+            <span class="recording-options-toggle">▼</span>
+          </div>
+
+          <div class="recording-options-body">
+            <div class="options-grid">
+              <!-- Left Column: Processing & Dictionary -->
+              <div>
+                <!-- Processing Mode -->
+                <div class="option-section mb-md">
+                  <div class="option-section-title">
+                    処理モード
+                  </div>
+                  <div class="segment-control">
+                    <button class="segment-control-item is-active">オンプレミス</button>
+                    <button class="segment-control-item">クラウド</button>
+                  </div>
+                  <p class="form-help mt-sm">オンプレミス: 施設内サーバーで処理（高速・セキュア）</p>
+                </div>
+
+                <!-- Dictionary Settings -->
+                <div class="option-section">
+                  <div class="option-section-title">
+                    辞書設定
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-label">
+                      <span class="toggle-label-main">辞書を使用する</span>
+                      <span class="toggle-label-sub">登録した用語を文字起こしに反映</span>
+                    </div>
+                    <button class="toggle-switch is-on" onclick="this.classList.toggle('is-on')"></button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Group & Record Settings -->
+              <div>
+                <!-- Group Selection -->
+                <div class="option-section mb-md">
+                  <div class="option-section-title">
+                    グループ選択
+                  </div>
+                  <p class="text-sm text-secondary mb-sm">録音を紐付けるグループを選択</p>
+                  <div class="group-select-grid">
+                    <label class="group-select-item is-selected">
+                      <input type="radio" name="group" checked>
+                      G1
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G2
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G3
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G4
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G5
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G6
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G7
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G8
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G9
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G10
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G11
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G12
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G13
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G14
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G15
+                    </label>
+                    <label class="group-select-item">
+                      <input type="radio" name="group">
+                      G16
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Basic Settings -->
+                <div class="option-section">
+                  <div class="option-section-title">
+                    記録の設定
+                  </div>
+                  <div class="form-group mb-md">
+                    <label class="form-label">記録のタイトル</label>
+                    <input type="text" class="form-input" placeholder="例：朝の申し送り、電話対応など">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">場所</label>
+                    <select class="form-select">
+                      <option>ナースステーション</option>
+                      <option>1階フロア</option>
+                      <option>2階フロア</option>
+                      <option>相談室</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Settings Summary -->
+          <div class="current-settings">
+            <span class="setting-chip is-active">オンプレミス</span>
+            <span class="setting-chip is-active">辞書ON</span>
+            <span class="setting-chip is-active">G1</span>
+            <span class="setting-chip">ナースステーション</span>
+          </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <div>
+          <!-- Transcript Section -->
+          <section class="transcript-container mb-lg">
+            <div class="transcript-header">
+              <div>
+                <h3 class="card-title">文字起こし</h3>
+                <p class="text-sm text-secondary">リアルタイムで表示されます</p>
+              </div>
+              <span class="badge badge-neutral">待機中</span>
+            </div>
+
+            <div class="transcript-list">
+              <!-- Sample transcripts -->
+              <div class="transcript-item">
+                <span class="transcript-time">09:12</span>
+                <span class="transcript-speaker">スタッフ</span>
+                <span class="transcript-text">本日の申し送りを開始します。夜間の対応状況から共有します。</span>
+              </div>
+              <div class="transcript-item">
+                <span class="transcript-time">09:13</span>
+                <span class="transcript-speaker">スタッフ</span>
+                <span class="transcript-text">Aさんは38度台の発熱があり、検温と経過観察を継続しています。</span>
+              </div>
+              <div class="transcript-item">
+                <span class="transcript-time">09:14</span>
+                <span class="transcript-speaker">スタッフ</span>
+                <span class="transcript-text">服薬については、予定通り投与済みです。</span>
+              </div>
+              <div class="transcript-item">
+                <span class="transcript-time">09:15</span>
+                <span class="transcript-speaker">相手</span>
+                <span class="transcript-text">了解です。次回の確認事項は、体温推移と食事量ですね。</span>
+              </div>
+              <div class="transcript-item">
+                <span class="transcript-time">09:16</span>
+                <span class="transcript-speaker">スタッフ</span>
+                <span class="transcript-text">では次に、Bさんの転倒リスクについて共有します。見守りを強化してください。</span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-outline btn-sm">辞書に追加</button>
+              <button class="btn btn-outline btn-sm">テキストを修正</button>
+            </div>
+          </section>
+
+          <!-- Summary Section -->
+          <section class="summary-editor mb-lg">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">要約・レポート</h3>
+                <p class="card-subtitle">AIが自動で作成します</p>
+              </div>
+            </div>
+
+            <div class="summary-toolbar">
+              <button class="btn btn-sm btn-ghost">戻す</button>
+              <button class="btn btn-sm btn-ghost">やり直し</button>
+              <span style="border-left: 1px solid var(--border); margin: 0 8px;"></span>
+              <button class="btn btn-sm btn-ghost">太字</button>
+              <button class="btn btn-sm btn-ghost">箇条書き</button>
+              <button class="btn btn-sm btn-ghost">AIで整形</button>
+            </div>
+
+            <div class="summary-content">
+              <div class="form-group">
+                <label class="form-label">レポートの形式</label>
+                <select class="form-select">
+                  <option>メール送信用（短く要点のみ）</option>
+                  <option>施設保存用（詳細に記録）</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">要約内容</label>
+                <textarea class="summary-textarea">【要約】
+・夜間の対応：ナースコール ○件（詳細は履歴参照）
+・Aさん：発熱（38℃台）→ 検温／経過観察を継続
+・服薬：予定通り投与済み
+・次回確認：体温推移／食事量
+
+【対応メモ】
+・転倒リスク：Bさん（見守り強化）</textarea>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-outline">ダウンロード</button>
+              <button class="btn btn-primary">保存する</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- Version History -->
+        <section class="card mt-lg">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">保存履歴</h3>
+              <p class="card-subtitle">過去のバージョンに戻せます</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="item-grid">
+              <label class="item-card" style="cursor: pointer;">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">現在の内容</div>
+                    <div class="item-card-subtitle">09:25 手動保存</div>
+                  </div>
+                  <input type="radio" name="version" checked style="width: 20px; height: 20px;">
+                </div>
+              </label>
+
+              <label class="item-card" style="cursor: pointer;">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">AI自動生成 v2</div>
+                    <div class="item-card-subtitle">09:20 施設保存用</div>
+                  </div>
+                  <input type="radio" name="version" style="width: 20px; height: 20px;">
+                </div>
+              </label>
+
+              <label class="item-card" style="cursor: pointer;">
+                <div class="item-card-header">
+                  <div>
+                    <div class="item-card-title">AI自動生成 v1</div>
+                    <div class="item-card-subtitle">09:15 メール用</div>
+                  </div>
+                  <input type="radio" name="version" style="width: 20px; height: 20px;">
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-outline">選択したバージョンに戻す</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Group selection interaction
+    document.querySelectorAll('.group-select-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.group-select-item').forEach(i => i.classList.remove('is-selected'));
+        this.classList.add('is-selected');
+      });
+    });
+
+    // Segment control interaction
+    document.querySelectorAll('.segment-control-item').forEach(item => {
+      item.addEventListener('click', function() {
+        this.parentElement.querySelectorAll('.segment-control-item').forEach(i => i.classList.remove('is-active'));
+        this.classList.add('is-active');
+      });
+    });
+  </script>
+</body>
+</html>
