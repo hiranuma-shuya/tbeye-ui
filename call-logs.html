@@ -100,27 +100,6 @@
       color: var(--primary);
     }
 
-    /* Call Route Display */
-    .call-route {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: var(--text-sm);
-    }
-
-    .call-route-from,
-    .call-route-to {
-      padding: 2px 6px;
-      background: var(--surface-alt);
-      border-radius: var(--radius-sm);
-      font-size: var(--text-sm);
-    }
-
-    .call-route-arrow {
-      color: var(--text-muted);
-      font-size: 10px;
-    }
-
     /* Terminal Display */
     .terminal-badge {
       display: inline-flex;
@@ -213,7 +192,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item">
-            SIPリアルタイム監視
+            グループ通話
           </a>
           <a href="call-logs.html" class="nav-item is-active">
             通話履歴
@@ -285,7 +264,6 @@
             <thead>
               <tr>
                 <th>日時</th>
-                <th>通話経路</th>
                 <th>端末</th>
                 <th>時間</th>
                 <th></th>
@@ -297,13 +275,6 @@
                   <div class="date-display">
                     <span class="date-main">今日</span>
                     <span class="date-time">09:00</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="call-route">
-                    <span class="call-route-from">1階 相談室</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">ナースステーション</span>
                   </div>
                 </td>
                 <td>
@@ -323,13 +294,6 @@
                   </div>
                 </td>
                 <td>
-                  <div class="call-route">
-                    <span class="call-route-from">2階 居室A</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">2階 スタッフルーム</span>
-                  </div>
-                </td>
-                <td>
                   <span class="terminal-badge">2004 <span class="terminal-sep">↔</span> 2005</span>
                 </td>
                 <td><span class="duration">2分</span></td>
@@ -343,13 +307,6 @@
                   <div class="date-display">
                     <span class="date-main">昨日</span>
                     <span class="date-time">14:30</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="call-route">
-                    <span class="call-route-from">ナースステーション</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">外線</span>
                   </div>
                 </td>
                 <td>
@@ -369,13 +326,6 @@
                   </div>
                 </td>
                 <td>
-                  <div class="call-route">
-                    <span class="call-route-from">3階 ホール</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">1階 玄関</span>
-                  </div>
-                </td>
-                <td>
                   <span class="terminal-badge">2008 <span class="terminal-sep">↔</span> 2002</span>
                 </td>
                 <td><span class="duration">5分</span></td>
@@ -392,13 +342,6 @@
                   </div>
                 </td>
                 <td>
-                  <div class="call-route">
-                    <span class="call-route-from">2階 スタッフルーム</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">ナースステーション</span>
-                  </div>
-                </td>
-                <td>
                   <span class="terminal-badge">2005 <span class="terminal-sep">↔</span> 2003</span>
                 </td>
                 <td><span class="duration">15分</span></td>
@@ -412,13 +355,6 @@
                   <div class="date-display">
                     <span class="date-main">1/6</span>
                     <span class="date-time">09:45</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="call-route">
-                    <span class="call-route-from">1階 廊下</span>
-                    <span class="call-route-arrow">→</span>
-                    <span class="call-route-to">2階 居室B</span>
                   </div>
                 </td>
                 <td>

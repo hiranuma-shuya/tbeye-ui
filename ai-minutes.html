@@ -27,59 +27,6 @@
       min-height: 0;
     }
 
-    /* Recording Controls in Header */
-    .recording-controls {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .record-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-xs);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--danger);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .record-btn:hover {
-      background: #dc2626;
-    }
-
-    .record-btn.is-recording {
-      animation: pulse-bg 1.5s infinite;
-    }
-
-    @keyframes pulse-bg {
-      0%, 100% { background: var(--danger); }
-      50% { background: #b91c1c; }
-    }
-
-    .record-dot {
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    .record-btn.is-recording .record-dot {
-      animation: pulse 1s infinite;
-    }
-
-    .recording-time {
-      font-size: var(--text-sm);
-      font-weight: 600;
-      color: var(--danger);
-      font-variant-numeric: tabular-nums;
-    }
-
     /* Settings Sections */
     .settings-section {
       padding: var(--space-sm) var(--space-md);
@@ -193,6 +140,12 @@
       font-weight: 600;
     }
 
+    .panel-header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
     .panel-body {
       flex: 1;
       overflow-y: auto;
@@ -273,30 +226,52 @@
       background: var(--surface);
     }
 
-    /* Status Indicator */
-    .status-indicator {
+    /* Date Picker */
+    .date-nav {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: var(--text-xs);
+      gap: 2px;
+    }
+
+    .date-nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 600;
       color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--text-muted);
+    .date-nav-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+      color: var(--primary);
     }
 
-    .status-dot.is-active {
-      background: var(--success);
-      animation: pulse 1.5s infinite;
+    .date-picker {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--text-sm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      cursor: pointer;
     }
 
-    .status-dot.is-recording {
-      background: var(--danger);
-      animation: pulse 1s infinite;
+    .date-picker:hover {
+      border-color: var(--primary);
+    }
+
+    .date-picker:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
     }
 
     /* Recordings Bar */
@@ -314,57 +289,6 @@
       font-weight: 600;
       color: var(--text-muted);
       white-space: nowrap;
-    }
-
-    .recordings-list {
-      display: flex;
-      gap: 4px;
-      flex: 1;
-      overflow-x: auto;
-      padding: 2px 0;
-    }
-
-    .recordings-list::-webkit-scrollbar {
-      height: 0;
-    }
-
-    .recording-tab {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: var(--space-xs) var(--space-sm);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-      min-width: 100px;
-    }
-
-    .recording-tab:hover {
-      background: var(--surface-alt);
-      border-color: var(--border);
-    }
-
-    .recording-tab.is-active {
-      background: var(--primary-light);
-      border-color: var(--primary);
-    }
-
-    .recording-tab-date {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .recording-tab.is-active .recording-tab-date {
-      color: var(--primary);
-    }
-
-    .recording-tab-title {
-      font-size: var(--text-xs);
-      font-weight: 500;
-      color: var(--text);
     }
 
     /* Panel Tabs */
@@ -597,104 +521,6 @@
       text-decoration: underline;
     }
 
-    /* Start Record Button in Settings */
-    .start-record-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-xs);
-      padding: var(--space-sm) var(--space-md);
-      background: var(--danger);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .start-record-btn:hover {
-      background: #dc2626;
-    }
-
-    .start-record-btn .record-dot {
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    /* Editor Toolbar */
-    .editor-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      padding: var(--space-xs) var(--space-md);
-      border-bottom: 1px solid var(--border-light);
-      background: var(--surface-alt);
-    }
-
-    .toolbar-group {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .toolbar-divider {
-      width: 1px;
-      height: 20px;
-      background: var(--border);
-      margin: 0 var(--space-sm);
-    }
-
-    .toolbar-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      min-width: 32px;
-      height: 28px;
-      padding: 0 var(--space-sm);
-      background: transparent;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: var(--text-xs);
-      font-weight: 500;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .toolbar-btn:hover {
-      background: var(--surface);
-      color: var(--text);
-    }
-
-    .toolbar-btn:active {
-      background: var(--border);
-    }
-
-    .toolbar-btn.is-active {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .toolbar-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .toolbar-btn:disabled:hover {
-      background: transparent;
-      color: var(--text-secondary);
-    }
-
-    .toolbar-icon {
-      font-size: 14px;
-      line-height: 1;
-    }
   </style>
 </head>
 <body>
@@ -713,7 +539,7 @@
             AI議事録
           </a>
           <a href="sip-groups.html" class="nav-item">
-            SIPリアルタイム監視
+            グループ通話
           </a>
           <a href="call-logs.html" class="nav-item">
             通話履歴
@@ -746,54 +572,35 @@
     <main class="main">
       <header class="main-header">
         <div class="main-header-inner">
-          <div>
-            <h1 class="page-title">AI議事録</h1>
-            <div class="current-settings" id="currentSettings" onclick="openRecordModal('edit')" style="cursor: pointer;">
-              <span class="setting-tag" id="tagMode">オンプレミス</span>
-              <span class="setting-tag is-highlight" id="tagDict">辞書ON</span>
-              <span class="setting-tag" id="tagGroup">G1</span>
-              <span class="setting-tag" id="tagLocation">ナースステーション</span>
-              <span class="setting-edit">変更</span>
-            </div>
-          </div>
-          <div class="recording-controls">
-            <span class="recording-time" id="recordingTime" style="display: none;">00:00</span>
-
-            <button class="record-btn" id="recordBtn" onclick="handleRecordClick()">
-              <span class="record-dot"></span>
-              <span id="recordLabel">録音開始</span>
-            </button>
+          <h1 class="page-title">AI議事録</h1>
+          <div class="current-settings" id="currentSettings" onclick="openSettingsModal()" style="cursor: pointer;">
+            <span class="setting-tag" id="tagMode">オンプレミス</span>
+            <span class="setting-tag is-highlight" id="tagDict">辞書ON</span>
+            <span class="setting-edit">変更</span>
           </div>
         </div>
       </header>
 
       <div class="main-content">
-        <!-- Recent Call History -->
+        <!-- Date & Group Selection -->
         <section class="recordings-bar">
-          <div class="recordings-bar-label">最近の通話履歴</div>
-          <div class="recordings-list">
-            <button class="recording-tab is-active">
-              <span class="recording-tab-date">今日 09:12</span>
-              <span class="recording-tab-title">朝の申し送り</span>
-            </button>
-            <button class="recording-tab">
-              <span class="recording-tab-date">昨日 14:30</span>
-              <span class="recording-tab-title">カンファレンス</span>
-            </button>
-            <button class="recording-tab">
-              <span class="recording-tab-date">1/6 10:00</span>
-              <span class="recording-tab-title">朝の申し送り</span>
-            </button>
-            <button class="recording-tab">
-              <span class="recording-tab-date">1/5 15:45</span>
-              <span class="recording-tab-title">家族面談</span>
-            </button>
-            <button class="recording-tab">
-              <span class="recording-tab-date">1/5 09:10</span>
-              <span class="recording-tab-title">朝の申し送り</span>
-            </button>
+          <div class="recordings-bar-label">日付</div>
+          <div class="date-nav">
+            <button class="date-nav-btn" onclick="changeDate(-1)" title="前日">‹</button>
+            <input type="date" class="date-picker" id="datePicker" value="2026-01-08" onchange="loadRecordings()">
+            <button class="date-nav-btn" onclick="changeDate(1)" title="翌日">›</button>
           </div>
-          <button class="btn btn-sm btn-ghost" onclick="location.href='call-logs.html'">すべて表示</button>
+          <div class="recordings-bar-label" style="margin-left: var(--space-md);">グループ</div>
+          <div class="group-quick-select" id="groupSelector">
+            <span class="group-chip is-selected" onclick="selectGroup(this)">G1</span>
+            <span class="group-chip" onclick="selectGroup(this)">G2</span>
+            <span class="group-chip" onclick="selectGroup(this)">G3</span>
+            <span class="group-chip" onclick="selectGroup(this)">G4</span>
+            <span class="group-chip" onclick="selectGroup(this)">G5</span>
+            <span class="group-chip" onclick="selectGroup(this)">G6</span>
+            <span class="group-chip" onclick="selectGroup(this)">G7</span>
+            <span class="group-chip" onclick="selectGroup(this)">G8</span>
+          </div>
         </section>
 
         <div class="minutes-layout">
@@ -802,10 +609,6 @@
             <div class="transcript-panel">
               <div class="panel-header">
                 <span class="panel-title">文字起こし</span>
-                <div class="status-indicator">
-                  <span class="status-dot" id="transcriptStatus"></span>
-                  <span id="transcriptStatusText">待機中</span>
-                </div>
               </div>
               <div class="panel-body">
                 <div class="transcript-item">
@@ -837,6 +640,8 @@
               <div class="panel-footer">
                 <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
                 <button class="btn btn-sm btn-outline">編集</button>
+                <div style="flex: 1;"></div>
+                <button class="btn btn-sm btn-primary" onclick="generateSummary()">要約生成</button>
               </div>
             </div>
           </div>
@@ -855,35 +660,7 @@
                 </select>
               </div>
               <div class="panel-tab-content" id="summaryContent">
-                <div class="editor-toolbar">
-                  <div class="toolbar-group">
-                    <button class="toolbar-btn" title="元に戻す (Ctrl+Z)" onclick="document.execCommand('undo')">
-                      <span class="toolbar-icon">↩</span>
-                      戻す
-                    </button>
-                    <button class="toolbar-btn" title="やり直し (Ctrl+Y)" onclick="document.execCommand('redo')">
-                      <span class="toolbar-icon">↪</span>
-                      やり直し
-                    </button>
-                  </div>
-                  <div class="toolbar-divider"></div>
-                  <div class="toolbar-group">
-                    <button class="toolbar-btn" title="太字" onclick="toggleBold()">
-                      <strong>太字</strong>
-                    </button>
-                    <button class="toolbar-btn" title="箇条書き" onclick="insertBullet()">
-                      <span class="toolbar-icon">•</span>
-                      箇条書き
-                    </button>
-                  </div>
-                  <div class="toolbar-divider"></div>
-                  <div class="toolbar-group">
-                    <button class="toolbar-btn" title="AIで整形">
-                      AIで整形
-                    </button>
-                  </div>
-                </div>
-                <textarea class="summary-textarea" id="summaryTextarea" placeholder="録音を開始すると、AIが自動で要約を作成します...">【要約】
+                <textarea class="summary-textarea" id="summaryTextarea" placeholder="日付とグループを選択すると、AIが作成した要約が表示されます...">【要約】
 ・夜間の対応：ナースコール ○件（詳細は履歴参照）
 ・Aさん：発熱（38℃台）→ 検温／経過観察を継続
 ・服薬：予定通り投与済み
@@ -929,11 +706,11 @@
     </main>
   </div>
 
-  <!-- Recording Settings Modal -->
+  <!-- Settings Modal -->
   <div class="modal-overlay" id="recordModal">
     <div class="modal">
       <div class="modal-header">
-        <span class="modal-title">録音設定</span>
+        <span class="modal-title">AI議事録設定</span>
         <button class="modal-close" onclick="closeRecordModal()">×</button>
       </div>
       <div class="modal-body" style="padding: 0;">
@@ -950,28 +727,6 @@
             <span class="settings-row-label">辞書を使用</span>
             <button class="toggle-sm is-on" onclick="this.classList.toggle('is-on')"></button>
           </div>
-        </div>
-        <div class="settings-section">
-          <div class="settings-label">グループ</div>
-          <div class="group-quick-select">
-            <span class="group-chip is-selected" onclick="selectGroupModal(this)">G1</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G2</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G3</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G4</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G5</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G6</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G7</span>
-            <span class="group-chip" onclick="selectGroupModal(this)">G8</span>
-          </div>
-        </div>
-        <div class="settings-section">
-          <div class="settings-label">場所</div>
-          <select class="form-select" style="font-size: var(--text-xs); min-height: 28px; padding: var(--space-xs);">
-            <option>ナースステーション</option>
-            <option>1階フロア</option>
-            <option>2階フロア</option>
-            <option>相談室</option>
-          </select>
         </div>
       </div>
       <div class="modal-footer" id="recordModalFooter" style="flex-direction: column;">
@@ -1013,34 +768,54 @@
   </div>
 
   <script>
-    let isRecording = false;
-    let recordingSeconds = 0;
-    let recordingInterval = null;
-
-    let recordModalMode = 'record'; // 'record' or 'edit'
-
-    // Handle record button click
-    function handleRecordClick() {
-      if (isRecording) {
-        stopRecording();
-      } else {
-        openRecordModal('record');
-      }
+    // Group selection
+    function selectGroup(el) {
+      document.querySelectorAll('#groupSelector .group-chip').forEach(c => c.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+      loadRecordings();
     }
 
-    function openRecordModal(mode = 'record') {
-      recordModalMode = mode;
+    // Load recordings for selected date and group
+    function loadRecordings() {
+      const date = document.getElementById('datePicker').value;
+      const selectedGroup = document.querySelector('#groupSelector .group-chip.is-selected');
+      const group = selectedGroup ? selectedGroup.textContent : 'G1';
+      // TODO: Load data for the selected date and group
+      console.log(`Loading: ${date} / ${group}`);
+    }
+
+    // Change date by offset (days)
+    function changeDate(offset) {
+      const datePicker = document.getElementById('datePicker');
+      const currentDate = new Date(datePicker.value);
+      currentDate.setDate(currentDate.getDate() + offset);
+      datePicker.value = currentDate.toISOString().split('T')[0];
+      loadRecordings();
+    }
+
+    // Generate summary from transcript
+    function generateSummary() {
+      const btn = event.target;
+      const format = document.getElementById('formatSelect').value;
+      const textarea = document.getElementById('summaryTextarea');
+
+      // Show loading state
+      btn.disabled = true;
+      btn.textContent = '生成中...';
+
+      // Simulate AI generation
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '要約生成';
+        // TODO: Call actual AI API
+        console.log(`Generating summary with format: ${format}`);
+      }, 1500);
+    }
+
+    // Settings Modal
+    function openSettingsModal() {
       const footer = document.getElementById('recordModalFooter');
-      const title = document.querySelector('#recordModal .modal-title');
-
-      if (mode === 'edit') {
-        title.textContent = '録音設定';
-        footer.innerHTML = '<button class="btn btn-primary" style="width: 100%;" onclick="saveSettings()">保存</button>';
-      } else {
-        title.textContent = '録音設定';
-        footer.innerHTML = '<button class="start-record-btn" onclick="startRecordingFromModal()"><span class="record-dot"></span>録音を開始</button>';
-      }
-
+      footer.innerHTML = '<button class="btn btn-primary" style="width: 100%;" onclick="saveSettings()">保存</button>';
       document.getElementById('recordModal').classList.add('is-open');
     }
 
@@ -1053,20 +828,12 @@
       closeRecordModal();
     }
 
-    function startRecordingFromModal() {
-      updateSettingsDisplay();
-      closeRecordModal();
-      startRecording();
-    }
-
     function updateSettingsDisplay() {
       // Get values from modal
       const modal = document.getElementById('recordModal');
       const toggles = modal.querySelectorAll('.toggle-sm');
       const modeToggle = toggles[0];
       const dictToggle = toggles[1];
-      const selectedGroup = modal.querySelector('.group-chip.is-selected');
-      const locationSelect = modal.querySelector('select');
 
       // Update header tags
       document.getElementById('tagMode').textContent = modeToggle.classList.contains('is-on') ? 'オンプレミス' : 'クラウド';
@@ -1079,52 +846,6 @@
         dictTag.textContent = '辞書OFF';
         dictTag.classList.remove('is-highlight');
       }
-
-      document.getElementById('tagGroup').textContent = selectedGroup ? selectedGroup.textContent : 'G1';
-      document.getElementById('tagLocation').textContent = locationSelect ? locationSelect.value : 'ナースステーション';
-    }
-
-    function startRecording() {
-      isRecording = true;
-      const btn = document.getElementById('recordBtn');
-      const label = document.getElementById('recordLabel');
-      const time = document.getElementById('recordingTime');
-      const status = document.getElementById('transcriptStatus');
-      const statusText = document.getElementById('transcriptStatusText');
-
-      btn.classList.add('is-recording');
-      label.textContent = '停止';
-      time.style.display = 'inline';
-      status.classList.add('is-recording');
-      statusText.textContent = '録音中';
-      recordingInterval = setInterval(() => {
-        recordingSeconds++;
-        const mins = Math.floor(recordingSeconds / 60).toString().padStart(2, '0');
-        const secs = (recordingSeconds % 60).toString().padStart(2, '0');
-        time.textContent = mins + ':' + secs;
-      }, 1000);
-    }
-
-    function stopRecording() {
-      isRecording = false;
-      const btn = document.getElementById('recordBtn');
-      const label = document.getElementById('recordLabel');
-      const time = document.getElementById('recordingTime');
-      const status = document.getElementById('transcriptStatus');
-      const statusText = document.getElementById('transcriptStatusText');
-
-      btn.classList.remove('is-recording');
-      label.textContent = '録音開始';
-      time.style.display = 'none';
-      status.classList.remove('is-recording');
-      statusText.textContent = '待機中';
-      clearInterval(recordingInterval);
-      recordingSeconds = 0;
-    }
-
-    function selectGroupModal(el) {
-      el.closest('.group-quick-select').querySelectorAll('.group-chip').forEach(c => c.classList.remove('is-selected'));
-      el.classList.add('is-selected');
     }
 
     // Summary tab switching
@@ -1136,14 +857,6 @@
       document.getElementById('historyContent').style.display = tab === 'history' ? 'flex' : 'none';
       document.getElementById('formatSelect').style.display = tab === 'summary' ? 'block' : 'none';
     }
-
-    // Recording tab selection
-    document.querySelectorAll('.recording-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.recording-tab').forEach(t => t.classList.remove('is-active'));
-        this.classList.add('is-active');
-      });
-    });
 
     // Dictionary Modal
     function openDictModal(word = '') {
@@ -1185,39 +898,6 @@
       }
     });
 
-    // Editor toolbar functions
-    function toggleBold() {
-      const textarea = document.getElementById('summaryTextarea');
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const text = textarea.value;
-      const selected = text.substring(start, end);
-
-      if (selected) {
-        const newText = text.substring(0, start) + '**' + selected + '**' + text.substring(end);
-        textarea.value = newText;
-        textarea.focus();
-        textarea.setSelectionRange(start + 2, end + 2);
-      }
-    }
-
-    function insertBullet() {
-      const textarea = document.getElementById('summaryTextarea');
-      const start = textarea.selectionStart;
-      const text = textarea.value;
-
-      // Find the start of the current line
-      let lineStart = start;
-      while (lineStart > 0 && text[lineStart - 1] !== '\n') {
-        lineStart--;
-      }
-
-      // Insert bullet at the start of the line
-      const newText = text.substring(0, lineStart) + '・' + text.substring(lineStart);
-      textarea.value = newText;
-      textarea.focus();
-      textarea.setSelectionRange(start + 1, start + 1);
-    }
   </script>
 </body>
 </html>
