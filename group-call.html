@@ -107,7 +107,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -115,6 +115,12 @@
       font-weight: 600;
       color: white;
       position: relative;
+    }
+
+    .participant-avatar svg.avatar-person {
+      width: 50px;
+      height: 50px;
+      color: rgba(255,255,255,0.85);
     }
 
     .participant-card.is-speaking .participant-avatar {
@@ -133,6 +139,7 @@
       justify-content: center;
       background: #1a1a2e;
       border: 2px solid #16213e;
+      z-index: 10;
     }
 
     .participant-avatar-icon.is-muted {
@@ -293,7 +300,10 @@
         <!-- Self (current user) -->
         <div class="participant-card is-self">
           <div class="participant-avatar">
-            佐
+            <svg class="avatar-person" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z"/>
+            </svg>
             <div class="participant-avatar-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -311,7 +321,10 @@
         <!-- Participant 2 - Speaking -->
         <div class="participant-card is-speaking">
           <div class="participant-avatar">
-            田
+            <svg class="avatar-person" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z"/>
+            </svg>
             <div class="participant-avatar-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -334,7 +347,10 @@
         <!-- Participant 3 -->
         <div class="participant-card">
           <div class="participant-avatar">
-            山
+            <svg class="avatar-person" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z"/>
+            </svg>
             <div class="participant-avatar-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -351,7 +367,10 @@
         <!-- Participant 4 - Muted -->
         <div class="participant-card">
           <div class="participant-avatar">
-            鈴
+            <svg class="avatar-person" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z"/>
+            </svg>
             <div class="participant-avatar-icon is-muted">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="1" y1="1" x2="23" y2="23"/>
@@ -369,7 +388,10 @@
         <!-- Participant 5 -->
         <div class="participant-card">
           <div class="participant-avatar">
-            高
+            <svg class="avatar-person" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z"/>
+            </svg>
             <div class="participant-avatar-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
