@@ -1054,6 +1054,10 @@
                 <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
                 <button class="btn btn-sm btn-outline">編集</button>
                 <div style="flex: 1;"></div>
+                <select class="format-select" id="formatSelect">
+                  <option>メール用（短く）</option>
+                  <option>保存用（詳細）</option>
+                </select>
                 <button class="btn btn-sm btn-primary" onclick="generateSummary()">要約生成</button>
               </div>
             </div>
@@ -1067,10 +1071,6 @@
                   <button class="panel-tab is-active" onclick="switchSummaryTab(this, 'summary')">要約</button>
                   <button class="panel-tab" onclick="switchSummaryTab(this, 'history')">履歴</button>
                 </div>
-                <select class="format-select" id="formatSelect">
-                  <option>メール用（短く）</option>
-                  <option>保存用（詳細）</option>
-                </select>
               </div>
               <div class="panel-tab-content" id="summaryContent">
                 <textarea class="summary-textarea" id="summaryTextarea" placeholder="日付とグループを選択すると、AIが作成した要約が表示されます...">【要約】
@@ -1410,7 +1410,6 @@
 
       document.getElementById('summaryContent').style.display = tab === 'summary' ? 'flex' : 'none';
       document.getElementById('historyContent').style.display = tab === 'history' ? 'flex' : 'none';
-      document.getElementById('formatSelect').style.display = tab === 'summary' ? 'block' : 'none';
     }
 
     // Dictionary Modal
