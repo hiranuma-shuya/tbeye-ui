@@ -249,11 +249,6 @@
             <button class="filter-tab">スタッフ <span class="filter-count">13</span></button>
             <button class="filter-tab">閲覧のみ <span class="filter-count">2</span></button>
           </div>
-          <select class="filter-select">
-            <option>すべての状態</option>
-            <option>アクティブ</option>
-            <option>停止中</option>
-          </select>
           <div class="help-trigger">
             ?
             <div class="help-tooltip">
@@ -272,7 +267,6 @@
                 <th style="width: 180px;">ユーザー</th>
                 <th style="width: 240px;">メールアドレス</th>
                 <th style="width: 100px;">役割</th>
-                <th style="width: 100px;">状態</th>
                 <th style="width: 150px;"></th>
               </tr>
             </thead>
@@ -286,7 +280,6 @@
                 </td>
                 <td class="text-secondary">t.yamada@example.com</td>
                 <td><span class="badge badge-primary">管理者</span></td>
-                <td><span class="badge badge-success">アクティブ</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost">権限変更</button>
@@ -301,7 +294,6 @@
                 </td>
                 <td class="text-secondary">h.sato@example.com</td>
                 <td><span class="badge badge-neutral">スタッフ</span></td>
-                <td><span class="badge badge-success">アクティブ</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost">権限変更</button>
@@ -316,7 +308,6 @@
                 </td>
                 <td class="text-secondary">i.tanaka@example.com</td>
                 <td><span class="badge badge-neutral">スタッフ</span></td>
-                <td><span class="badge badge-success">アクティブ</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost">権限変更</button>
@@ -331,7 +322,6 @@
                 </td>
                 <td class="text-secondary">m.nakamura@example.com</td>
                 <td><span class="badge badge-primary">管理者</span></td>
-                <td><span class="badge badge-success">アクティブ</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost">権限変更</button>
@@ -346,22 +336,20 @@
                 </td>
                 <td class="text-secondary">k.ito@example.com</td>
                 <td><span class="badge badge-neutral">閲覧のみ</span></td>
-                <td><span class="badge badge-success">アクティブ</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost">権限変更</button>
                 </td>
               </tr>
-              <tr class="is-inactive">
+              <tr>
                 <td>
                   <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="user-avatar" style="background: var(--surface-alt); color: var(--text-muted);">鈴</div>
+                    <div class="user-avatar">鈴</div>
                     <strong>鈴木 次郎</strong>
                   </div>
                 </td>
                 <td class="text-secondary">j.suzuki@example.com</td>
                 <td><span class="badge badge-neutral">スタッフ</span></td>
-                <td><span class="badge badge-danger">停止中</span></td>
                 <td class="table-actions">
                   <button class="btn btn-sm btn-ghost">編集</button>
                   <button class="btn btn-sm btn-ghost text-danger">削除する</button>
