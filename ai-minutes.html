@@ -1009,7 +1009,6 @@
             </div>
             <div class="minutes-main-header-right">
               <div class="current-settings" id="currentSettings" onclick="openSettingsModal()" style="cursor: pointer;">
-                <span class="setting-tag" id="tagMode">オンプレミス</span>
                 <span class="setting-tag is-highlight" id="tagDict">辞書ON</span>
                 <span class="setting-edit">変更</span>
               </div>
@@ -1132,13 +1131,6 @@
         <button class="modal-close" onclick="closeRecordModal()">×</button>
       </div>
       <div class="modal-body" style="padding: 0;">
-        <div class="settings-section">
-          <div class="settings-label">処理モード</div>
-          <div class="settings-row">
-            <span class="settings-row-label">オンプレミス</span>
-            <button class="toggle-sm is-on" onclick="this.classList.toggle('is-on')"></button>
-          </div>
-        </div>
         <div class="settings-section">
           <div class="settings-label">辞書</div>
           <div class="settings-row">
@@ -1387,11 +1379,7 @@
       // Get values from modal
       const modal = document.getElementById('recordModal');
       const toggles = modal.querySelectorAll('.toggle-sm');
-      const modeToggle = toggles[0];
-      const dictToggle = toggles[1];
-
-      // Update header tags
-      document.getElementById('tagMode').textContent = modeToggle.classList.contains('is-on') ? 'オンプレミス' : 'クラウド';
+      const dictToggle = toggles[0];
 
       const dictTag = document.getElementById('tagDict');
       if (dictToggle.classList.contains('is-on')) {
