@@ -305,7 +305,9 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: var(--space-md);
-      height: 100%;
+      flex: 1;
+      min-height: 0;
+      align-items: stretch;
     }
 
     @media (max-width: 1000px) {
@@ -319,6 +321,15 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      height: 100%;
+    }
+
+    .minutes-main-body {
+      flex: 1;
+      padding: var(--space-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Settings Sections */
@@ -483,17 +494,6 @@
       display: flex;
       gap: var(--space-xs);
       flex-shrink: 0;
-    }
-
-    /* Summary Panel */
-    .summary-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
     }
 
     .summary-textarea {
@@ -815,6 +815,310 @@
       text-decoration: underline;
     }
 
+    /* Mode Toggle */
+    .mode-toggle {
+      display: flex;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .mode-toggle-btn {
+      padding: 6px 12px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: calc(var(--radius) - 2px);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .mode-toggle-btn:hover {
+      color: var(--text);
+    }
+
+    .mode-toggle-btn.is-active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Record Item (1階層 - シンプル表示) */
+    .record-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--border-light);
+      transition: all 0.15s ease;
+    }
+
+    .record-item:hover {
+      background: var(--surface-alt);
+    }
+
+    .record-item-content {
+      flex: 1;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .record-item-time {
+      color: var(--text-muted);
+      font-family: monospace;
+      font-size: var(--text-xs);
+    }
+
+    .record-item-device {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: var(--text-xs);
+    }
+
+    .record-item-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .record-action-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .record-action-btn:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .record-action-btn.is-danger:hover {
+      background: #fef2f2;
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Record Group (2階層 - 申し送りモード) */
+    .record-group {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .record-group-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--surface-alt);
+    }
+
+    .record-group-header:hover {
+      background: var(--primary-light);
+    }
+
+    .record-group.is-selected .record-group-header {
+      background: var(--primary-light);
+      border-left: 3px solid var(--primary);
+    }
+
+    .record-group-content {
+      flex: 1;
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .record-group-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .record-group-body {
+      background: var(--surface);
+    }
+
+    .record-sub-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      padding-left: calc(var(--space-md) + 12px);
+      font-size: var(--text-xs);
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.15s ease;
+    }
+
+    .record-sub-item:last-child {
+      border-bottom: none;
+    }
+
+    .record-sub-item:hover {
+      background: var(--surface-alt);
+    }
+
+    .record-sub-content {
+      flex: 1;
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .record-sub-time {
+      color: var(--text-muted);
+      font-family: monospace;
+      min-width: 65px;
+    }
+
+    .record-sub-device {
+      color: var(--primary);
+      font-weight: 600;
+      min-width: 45px;
+    }
+
+    .record-sub-text {
+      flex: 1;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .record-sub-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Source Data Panel */
+    .source-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .source-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    /* Summary Panel */
+    .summary-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* Dictionary Toggle in Header */
+    .dict-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 4px 10px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .dict-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    .dict-toggle.is-on {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    .dict-toggle-icon {
+      font-size: 14px;
+    }
+
+    .dict-toggle-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .dict-toggle.is-on .dict-toggle-label {
+      color: var(--primary);
+    }
+
+    .dict-toggle-switch {
+      position: relative;
+      width: 28px;
+      height: 16px;
+      background: var(--border);
+      border-radius: 999px;
+      transition: background 0.2s ease;
+    }
+
+    .dict-toggle.is-on .dict-toggle-switch {
+      background: var(--primary);
+    }
+
+    .dict-toggle-switch::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+
+    .dict-toggle.is-on .dict-toggle-switch::after {
+      transform: translateX(12px);
+    }
+
+    /* Header Select */
+    .header-select {
+      padding: 6px 10px;
+      font-size: var(--text-xs);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .header-select:hover {
+      border-color: var(--primary);
+    }
+
+    .header-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
   </style>
 </head>
 <body>
@@ -834,9 +1138,6 @@
           </a>
           <a href="sip-groups.html" class="nav-item">
             グループ通話
-          </a>
-          <a href="call-logs.html" class="nav-item">
-            通話履歴
           </a>
         </div>
 
@@ -1008,56 +1309,245 @@
               </div>
             </div>
             <div class="minutes-main-header-right">
-              <div class="current-settings" id="currentSettings" onclick="openSettingsModal()" style="cursor: pointer;">
-                <span class="setting-tag is-highlight" id="tagDict">辞書ON</span>
-                <span class="setting-edit">変更</span>
+              <select class="header-select" id="formatSelect">
+                <option value="email">メール用</option>
+                <option value="detail">保存用（詳細）</option>
+              </select>
+              <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
+              <div class="dict-toggle is-on" id="dictToggle" onclick="toggleDict()">
+                <span class="dict-toggle-label">辞書</span>
+                <span class="dict-toggle-switch"></span>
               </div>
             </div>
           </div>
           <div class="minutes-main-body">
             <div class="minutes-layout">
-          <!-- Left: Transcript -->
+          <!-- Left: Source Data -->
           <div class="minutes-column">
-            <div class="transcript-panel">
+            <div class="source-panel" id="sourcePanel">
               <div class="panel-header">
-                <span class="panel-title">文字起こし</span>
-              </div>
-              <div class="panel-body">
-                <div class="transcript-item">
-                  <span class="transcript-time">09:12</span>
-                  <span class="transcript-speaker">Staff</span>
-                  <span class="transcript-text">本日の申し送りを開始します。夜間の対応状況から共有します。</span>
-                </div>
-                <div class="transcript-item">
-                  <span class="transcript-time">09:13</span>
-                  <span class="transcript-speaker">Staff</span>
-                  <span class="transcript-text">Aさんは38度台の発熱があり、検温と経過観察を継続しています。</span>
-                </div>
-                <div class="transcript-item">
-                  <span class="transcript-time">09:14</span>
-                  <span class="transcript-speaker">Staff</span>
-                  <span class="transcript-text">服薬については、予定通り投与済みです。</span>
-                </div>
-                <div class="transcript-item">
-                  <span class="transcript-time">09:15</span>
-                  <span class="transcript-speaker">Other</span>
-                  <span class="transcript-text">了解です。次回の確認事項は、体温推移と食事量ですね。</span>
-                </div>
-                <div class="transcript-item">
-                  <span class="transcript-time">09:16</span>
-                  <span class="transcript-speaker">Staff</span>
-                  <span class="transcript-text">では次に、Bさんの転倒リスクについて共有します。見守りを強化してください。</span>
+                <span class="panel-title">記録データ</span>
+                <div class="panel-header-actions">
+                  <div class="mode-toggle">
+                    <button class="mode-toggle-btn is-active" id="modeHandover" onclick="setMode('handover')">申し送り</button>
+                    <button class="mode-toggle-btn" id="modeDaily" onclick="setMode('daily')">一日の終わり</button>
+                  </div>
                 </div>
               </div>
-              <div class="panel-footer">
-                <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
-                <button class="btn btn-sm btn-outline">編集</button>
-                <div style="flex: 1;"></div>
-                <select class="format-select" id="formatSelect">
-                  <option>メール用（短く）</option>
-                  <option>保存用（詳細）</option>
-                </select>
-                <button class="btn btn-sm btn-primary" onclick="generateSummary()">要約生成</button>
+              <div class="source-panel-body" id="recordList">
+                <!-- 一日の終わりモード（1階層表示） -->
+                <div id="dailyModeView" style="display: none;">
+                  <div class="record-item" data-id="1">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[15:45:57]</span>
+                      <span class="record-item-device">[3001]</span>
+                      205号室 佐藤花子さん 心拍が下限設定値を下回ったことをお知らせします。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 1)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 1)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="2">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[15:47:04]</span>
+                      <span class="record-item-device">[2002]</span>
+                      1分間に心拍58回とやや低めですが、血圧は問題なしです。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 2)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 2)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="3">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[15:47:09]</span>
+                      <span class="record-item-device">[2002]</span>
+                      看護師と相談の上、経過観察となりました。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 3)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 3)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="4">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[15:47:18]</span>
+                      <span class="record-item-device">[2001]</span>
+                      了解しました。しばらくこまめに様子観察をお願いします。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 4)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 4)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="5">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[15:47:27]</span>
+                      <span class="record-item-device">[2002]</span>
+                      はい、現在は表情も落ち着いており、症状の悪化は見られません。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 5)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 5)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="6">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[16:20:33]</span>
+                      <span class="record-item-device">[3001]</span>
+                      301号室 田中一郎さん 転倒注意アラートをお知らせします。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 6)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 6)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="7">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[16:21:15]</span>
+                      <span class="record-item-device">[2001]</span>
+                      田中さん、トイレへの移動時にふらつきあり。付き添い対応中。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 7)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 7)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="8">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[16:23:40]</span>
+                      <span class="record-item-device">[2001]</span>
+                      トイレ対応完了。本人は自力歩行希望。見守り強化で対応します。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 8)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 8)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                  <div class="record-item" data-id="9">
+                    <div class="record-item-content">
+                      <span class="record-item-time">[16:24:02]</span>
+                      <span class="record-item-device">[2002]</span>
+                      了解。夕方以降も注意して観察します。
+                    </div>
+                    <div class="record-item-actions">
+                      <button class="record-action-btn" onclick="editRecord(event, 9)" title="編集">✎</button>
+                      <button class="record-action-btn is-danger" onclick="deleteRecord(event, 9)" title="削除">🗑</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 申し送りモード（2階層表示） -->
+                <div id="handoverModeView">
+                  <div class="record-group is-selected" data-group="1">
+                    <div class="record-group-header" onclick="selectRecordGroup(this.parentElement, 1)">
+                      <div class="record-group-content">
+                        <span class="record-item-time">[15:45:57]</span>
+                        <span class="record-item-device">[3001]</span>
+                        205号室 佐藤花子さん 心拍が下限設定値を下回ったことをお知らせします。
+                      </div>
+                      <div class="record-group-actions">
+                        <button class="record-action-btn" onclick="editRecordGroup(event, 1)" title="編集">✎</button>
+                        <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 1)" title="削除">🗑</button>
+                      </div>
+                    </div>
+                    <div class="record-group-body">
+                      <div class="record-sub-item" data-sub-id="1-1">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[15:47:04]</span>
+                          <span class="record-sub-device">[2002]</span>
+                          <span class="record-sub-text">1分間に心拍58回とやや低めですが、血圧は問題なしです。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '1-1')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-1')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                      <div class="record-sub-item" data-sub-id="1-2">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[15:47:09]</span>
+                          <span class="record-sub-device">[2002]</span>
+                          <span class="record-sub-text">看護師と相談の上、経過観察となりました。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '1-2')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-2')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                      <div class="record-sub-item" data-sub-id="1-3">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[15:47:18]</span>
+                          <span class="record-sub-device">[2001]</span>
+                          <span class="record-sub-text">了解しました。しばらくこまめに様子観察をお願いします。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '1-3')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-3')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                      <div class="record-sub-item" data-sub-id="1-4">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[15:47:27]</span>
+                          <span class="record-sub-device">[2002]</span>
+                          <span class="record-sub-text">はい、現在は表情も落ち着いており、症状の悪化は見られません。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '1-4')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-4')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="record-group" data-group="2">
+                    <div class="record-group-header" onclick="selectRecordGroup(this.parentElement, 2)">
+                      <div class="record-group-content">
+                        <span class="record-item-time">[16:20:33]</span>
+                        <span class="record-item-device">[3001]</span>
+                        301号室 田中一郎さん 転倒注意アラートをお知らせします。
+                      </div>
+                      <div class="record-group-actions">
+                        <button class="record-action-btn" onclick="editRecordGroup(event, 2)" title="編集">✎</button>
+                        <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 2)" title="削除">🗑</button>
+                      </div>
+                    </div>
+                    <div class="record-group-body">
+                      <div class="record-sub-item" data-sub-id="2-1">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[16:21:15]</span>
+                          <span class="record-sub-device">[2001]</span>
+                          <span class="record-sub-text">田中さん、トイレへの移動時にふらつきあり。付き添い対応中。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '2-1')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '2-1')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                      <div class="record-sub-item" data-sub-id="2-2">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[16:23:40]</span>
+                          <span class="record-sub-device">[2001]</span>
+                          <span class="record-sub-text">トイレ対応完了。本人は自力歩行希望。見守り強化で対応します。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '2-2')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '2-2')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                      <div class="record-sub-item" data-sub-id="2-3">
+                        <div class="record-sub-content">
+                          <span class="record-sub-time">[16:24:02]</span>
+                          <span class="record-sub-device">[2002]</span>
+                          <span class="record-sub-text">了解。夕方以降も注意して観察します。</span>
+                        </div>
+                        <div class="record-sub-actions">
+                          <button class="record-action-btn" onclick="editSubRecord(event, '2-3')" title="編集">✎</button>
+                          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '2-3')" title="削除">🗑</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1066,47 +1556,28 @@
           <div class="minutes-column">
             <div class="summary-panel">
               <div class="panel-header">
-                <div class="panel-tabs">
-                  <button class="panel-tab is-active" onclick="switchSummaryTab(this, 'summary')">要約</button>
-                  <button class="panel-tab" onclick="switchSummaryTab(this, 'history')">履歴</button>
-                </div>
+                <span class="panel-title">申し送り記録</span>
               </div>
               <div class="panel-tab-content" id="summaryContent">
-                <textarea class="summary-textarea" id="summaryTextarea" placeholder="日付とグループを選択すると、AIが作成した要約が表示されます...">【要約】
-・夜間の対応：ナースコール ○件（詳細は履歴参照）
-・Aさん：発熱（38℃台）→ 検温／経過観察を継続
-・服薬：予定通り投与済み
-・次回確認：体温推移／食事量
+                <textarea class="summary-textarea" id="summaryTextarea" placeholder="日付とグループを選択すると、AIが作成した要約が表示されます...">
+日付：2026年1月8日
+勤務帯：午後のシフト
+担当：2002番と2001番の職員
 
-【対応メモ】
-・転倒リスク：Bさん（見守り強化）</textarea>
-              </div>
-              <div class="panel-tab-content" id="historyContent" style="display: none;">
-                <div class="version-list">
-                  <div class="version-item is-current">
-                    <div class="version-info">
-                      <span class="version-label">現在</span>
-                      <span class="version-time">09:20 保存</span>
-                    </div>
-                    <span class="version-author">佐藤 花子</span>
-                  </div>
-                  <div class="version-item">
-                    <div class="version-info">
-                      <span class="version-label">v2</span>
-                      <span class="version-time">09:18 自動保存</span>
-                    </div>
-                    <button class="btn btn-sm btn-ghost">復元</button>
-                  </div>
-                  <div class="version-item">
-                    <div class="version-info">
-                      <span class="version-label">v1</span>
-                      <span class="version-time">09:15 AI生成</span>
-                    </div>
-                    <button class="btn btn-sm btn-ghost">復元</button>
-                  </div>
-                </div>
+【佐藤花子さん（205号室）】
+15:45にアシストコールがあり、2002番の職員が対応しました。
+佐藤さんの心拍数が下限値を下回ったとの報告があり、すぐに状態の確認に向かいました。到着時には佐藤さんの意識ははっきりしていましたが、少し顔色が悪いとのことでした。
+
+心拍数と血圧の測定を行い、心拍数は1分間に58回と少し低めでしたが、血圧には問題がありませんでした。看護師との相談の結果、経過を見守ることとなりました。
+
+2001番の職員より、こまめに様子を見るよう指示が出ています。
+
+【田中一郎さん（301号室）】
+16:20にアシストコールがあり、2001番の職員が対応しました。
+トイレへの移動時にふらつきが見られたため付き添い対応。本人は自力歩行希望のため、見守り強化で対応中。夕方以降も注意して観察を継続。</textarea>
               </div>
               <div class="panel-footer">
+                <button class="btn btn-sm btn-outline" onclick="regenerateSummary()">再要約</button>
                 <div style="flex: 1;"></div>
                 <button class="btn btn-sm btn-outline">ダウンロード</button>
                 <button class="btn btn-sm btn-primary">保存</button>
@@ -1340,25 +1811,6 @@
       originalSelectMinutes.call(this, date, group);
     };
 
-    // Generate summary from transcript
-    function generateSummary() {
-      const btn = event.target;
-      const format = document.getElementById('formatSelect').value;
-      const textarea = document.getElementById('summaryTextarea');
-
-      // Show loading state
-      btn.disabled = true;
-      btn.textContent = '生成中...';
-
-      // Simulate AI generation
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = '要約生成';
-        // TODO: Call actual AI API
-        console.log(`Generating summary with format: ${format}`);
-      }, 1500);
-    }
-
     // Settings Modal
     function openSettingsModal() {
       const footer = document.getElementById('recordModalFooter');
@@ -1389,15 +1841,6 @@
         dictTag.textContent = '辞書OFF';
         dictTag.classList.remove('is-highlight');
       }
-    }
-
-    // Summary tab switching
-    function switchSummaryTab(btn, tab) {
-      document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('is-active'));
-      btn.classList.add('is-active');
-
-      document.getElementById('summaryContent').style.display = tab === 'summary' ? 'flex' : 'none';
-      document.getElementById('historyContent').style.display = tab === 'history' ? 'flex' : 'none';
     }
 
     // Dictionary Modal
@@ -1439,6 +1882,196 @@
         closeRecordModal();
       }
     });
+
+    // Current mode state
+    let currentMode = 'handover';
+
+    // Mode Toggle (Daily / Handover)
+    function setMode(mode) {
+      currentMode = mode;
+      document.getElementById('modeDaily').classList.toggle('is-active', mode === 'daily');
+      document.getElementById('modeHandover').classList.toggle('is-active', mode === 'handover');
+
+      // Switch views
+      document.getElementById('dailyModeView').style.display = mode === 'daily' ? 'block' : 'none';
+      document.getElementById('handoverModeView').style.display = mode === 'handover' ? 'block' : 'none';
+
+      // Update right panel based on mode
+      if (mode === 'daily') {
+        showDailySummary();
+      } else {
+        // Show first group's summary
+        updateSummaryForGroup(1);
+      }
+
+      console.log(`Mode changed to: ${mode}`);
+    }
+
+    // Show full day summary (for daily mode)
+    function showDailySummary() {
+      const textarea = document.getElementById('summaryTextarea');
+      textarea.value = `日付：2026年1月8日
+勤務帯：午後のシフト
+担当：2002番と2001番の職員
+
+【佐藤花子さん（205号室）】
+15:45にアシストコールがあり、2002番の職員が対応しました。
+佐藤さんの心拍数が下限値を下回ったとの報告があり、すぐに状態の確認に向かいました。到着時には佐藤さんの意識ははっきりしていましたが、少し顔色が悪いとのことでした。
+
+心拍数と血圧の測定を行い、心拍数は1分間に58回と少し低めでしたが、血圧には問題がありませんでした。看護師との相談の結果、経過を見守ることとなりました。
+
+2001番の職員より、こまめに様子を見るよう指示が出ています。
+
+【田中一郎さん（301号室）】
+16:20にアシストコールがあり、2001番の職員が対応しました。
+トイレへの移動時にふらつきが見られたため付き添い対応。本人は自力歩行希望のため、見守り強化で対応中。夕方以降も注意して観察を継続。`;
+    }
+
+    // Dictionary Toggle
+    function toggleDict() {
+      const toggle = document.getElementById('dictToggle');
+      toggle.classList.toggle('is-on');
+      const isOn = toggle.classList.contains('is-on');
+      console.log(`Dictionary ${isOn ? 'ON' : 'OFF'}`);
+    }
+
+    // Select Record (1階層モード) - No selection in daily mode
+    function selectRecord(el, id) {
+      // Don't do anything for action buttons
+      if (event.target.closest('.record-action-btn')) return;
+
+      // In daily mode, don't select individual items
+      // Just allow editing/deleting
+    }
+
+    // Edit Record
+    function editRecord(event, id) {
+      event.stopPropagation();
+      console.log(`Edit record ${id}`);
+      // TODO: Open edit modal
+    }
+
+    // Delete Record
+    function deleteRecord(event, id) {
+      event.stopPropagation();
+      if (confirm('この記録を削除しますか？')) {
+        const item = document.querySelector(`.record-item[data-id="${id}"]`);
+        if (item) item.remove();
+        console.log(`Deleted record ${id}`);
+      }
+    }
+
+    // Select Record Group (2階層モード)
+    function selectRecordGroup(el, groupId) {
+      // Don't select if clicking action buttons
+      if (event.target.closest('.record-action-btn')) return;
+
+      document.querySelectorAll('.record-group').forEach(g => g.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+
+      // Update right panel
+      updateSummaryForGroup(groupId);
+    }
+
+    // Edit Record Group
+    function editRecordGroup(event, groupId) {
+      event.stopPropagation();
+      console.log(`Edit group ${groupId}`);
+      // TODO: Open edit modal
+    }
+
+    // Delete Record Group
+    function deleteRecordGroup(event, groupId) {
+      event.stopPropagation();
+      if (confirm('このアシストコールの記録をすべて削除しますか？')) {
+        const group = document.querySelector(`.record-group[data-group="${groupId}"]`);
+        if (group) group.remove();
+        console.log(`Deleted group ${groupId}`);
+      }
+    }
+
+    // Edit Sub Record (申し送りモードの各行)
+    function editSubRecord(event, subId) {
+      event.stopPropagation();
+      console.log(`Edit sub record ${subId}`);
+      // TODO: Open edit modal
+    }
+
+    // Delete Sub Record (申し送りモードの各行)
+    function deleteSubRecord(event, subId) {
+      event.stopPropagation();
+      if (confirm('この記録を削除しますか？')) {
+        const item = document.querySelector(`.record-sub-item[data-sub-id="${subId}"]`);
+        if (item) item.remove();
+        console.log(`Deleted sub record ${subId}`);
+      }
+    }
+
+    // Update summary panel for selected record
+    function updateSummaryForRecord(id) {
+      const summaryData = {
+        1: `【205号室 佐藤花子さん】
+15:45にアシストコールがあり、心拍が下限設定値を下回ったことをお知らせしました。`,
+        2: `1分間に心拍58回とやや低めですが、血圧は問題なしです。`,
+        3: `看護師と相談の上、経過観察となりました。`,
+        4: `了解しました。しばらくこまめに様子観察をお願いします。`,
+        5: `現在は表情も落ち着いており、症状の悪化は見られません。`,
+        6: `【301号室 田中一郎さん】
+16:20に転倒注意アラートをお知らせしました。`,
+        7: `田中さん、トイレへの移動時にふらつきあり。付き添い対応中。`,
+        8: `トイレ対応完了。本人は自力歩行希望。見守り強化で対応します。`,
+        9: `了解。夕方以降も注意して観察します。`
+      };
+
+      const textarea = document.getElementById('summaryTextarea');
+      if (summaryData[id]) {
+        textarea.value = summaryData[id];
+      }
+    }
+
+    // Update summary panel for selected group
+    function updateSummaryForGroup(groupId) {
+      const summaryData = {
+        1: `【佐藤花子さん（205号室）】
+15:45にアシストコールがあり、心拍が下限設定値を下回りました。
+
+対応内容：
+・心拍数と血圧を測定（心拍58回/分、血圧は正常）
+・看護師と相談の上、経過観察
+・こまめな様子観察を継続
+
+現在の状態：
+表情も落ち着いており、症状の悪化は見られません。`,
+        2: `【田中一郎さん（301号室）】
+16:20に転倒注意アラートがありました。
+
+対応内容：
+・トイレへの移動時にふらつきあり
+・付き添い対応を実施
+・本人は自力歩行希望
+
+今後の対応：
+見守り強化で対応中。夕方以降も注意して観察を継続。`
+      };
+
+      const textarea = document.getElementById('summaryTextarea');
+      if (summaryData[groupId]) {
+        textarea.value = summaryData[groupId];
+      }
+    }
+
+    // Regenerate Summary
+    function regenerateSummary() {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = '生成中...';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '再要約';
+        console.log('Summary regenerated');
+      }, 1500);
+    }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
