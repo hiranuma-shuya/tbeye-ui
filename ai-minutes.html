@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI議事録 - 会話を記録する</title>
+  <title>記録データ/AI要約</title>
   <link rel="stylesheet" href="style.css">
   <style>
     /* Override main styles for fixed height layout */
@@ -928,6 +928,27 @@
       color: var(--danger);
     }
 
+    /* Record Checkbox */
+    .record-checkbox {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Add Button */
+    .record-action-btn.is-add {
+      color: var(--success);
+    }
+
+    .record-action-btn.is-add:hover {
+      background: #dcfce7;
+      border-color: var(--success);
+      color: var(--success);
+    }
+
     /* Record Group (2階層 - 申し送りモード) */
     .record-group {
       border-bottom: 1px solid var(--border);
@@ -1197,7 +1218,7 @@
         <div class="nav-section">
           <div class="nav-section-title">メイン機能</div>
           <a href="ai-minutes.html" class="nav-item is-active">
-            AI議事録
+            記録データ/AI要約
           </a>
           <a href="sip-groups.html" class="nav-item">
             グループ通話
@@ -1376,7 +1397,10 @@
                 <option value="email">メール用</option>
                 <option value="detail">保存用（詳細）</option>
               </select>
-              <button class="btn btn-sm btn-outline" onclick="openDictModal()">辞書に追加</button>
+              <div class="dict-toggle is-on" id="transcriptToggle" onclick="toggleTranscript()">
+                <span class="dict-toggle-label">文字起こし</span>
+                <span class="dict-toggle-switch"></span>
+              </div>
               <div class="dict-toggle is-on" id="dictToggle" onclick="toggleDict()">
                 <span class="dict-toggle-label">辞書</span>
                 <span class="dict-toggle-switch"></span>
@@ -1395,6 +1419,7 @@
                 <!-- 朝のアシストコール -->
                 <div class="record-group" data-group="1" data-period="morning">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 1)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[07:15:22]</span>
@@ -1402,29 +1427,34 @@
                       102号室 鈴木太郎さん 起床時の血圧測定アラートをお知らせします。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 1)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 1)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 1)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="1-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[07:18:05]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">血圧測定完了。上145/下92で少し高めです。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '1-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '1-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-1')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="1-2">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[07:20:30]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">朝食前に再測定予定。様子を見ます。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '1-2')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '1-2')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '1-2')" title="削除">🗑</button>
                       </div>
@@ -1434,6 +1464,7 @@
 
                 <div class="record-group" data-group="2" data-period="morning">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 2)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[08:45:10]</span>
@@ -1441,18 +1472,21 @@
                       203号室 山本和子さん 服薬時間のお知らせです。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 2)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 2)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 2)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="2-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[08:48:22]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">服薬対応完了。本人確認のもと、朝の薬3種を投与しました。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '2-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '2-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '2-1')" title="削除">🗑</button>
                       </div>
@@ -1463,6 +1497,7 @@
                 <!-- 昼のアシストコール -->
                 <div class="record-group is-selected" data-group="3" data-period="noon">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 3)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[12:30:45]</span>
@@ -1470,29 +1505,34 @@
                       205号室 佐藤花子さん 食事介助のコールです。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 3)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 3)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 3)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="3-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[12:32:18]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">食事介助開始。本日は食欲があり、よく召し上がっています。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '3-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '3-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '3-1')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="3-2">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[12:55:40]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">食事完了。主食8割、副食9割摂取。水分200ml。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '3-2')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '3-2')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '3-2')" title="削除">🗑</button>
                       </div>
@@ -1502,6 +1542,7 @@
 
                 <div class="record-group" data-group="4" data-period="noon">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 4)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[15:45:57]</span>
@@ -1509,51 +1550,60 @@
                       205号室 佐藤花子さん 心拍が下限設定値を下回ったことをお知らせします。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 4)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 4)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 4)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="4-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[15:47:04]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">1分間に心拍58回とやや低めですが、血圧は問題なしです。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '4-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '4-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '4-1')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="4-2">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[15:47:09]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">看護師と相談の上、経過観察となりました。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '4-2')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '4-2')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '4-2')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="4-3">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[15:47:18]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">了解しました。しばらくこまめに様子観察をお願いします。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '4-3')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '4-3')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '4-3')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="4-4">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[15:47:27]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">はい、現在は表情も落ち着いており、症状の悪化は見られません。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '4-4')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '4-4')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '4-4')" title="削除">🗑</button>
                       </div>
@@ -1564,6 +1614,7 @@
                 <!-- 夜のアシストコール -->
                 <div class="record-group" data-group="5" data-period="night">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 5)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[19:30:15]</span>
@@ -1571,29 +1622,34 @@
                       301号室 田中一郎さん 転倒注意アラートをお知らせします。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 5)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 5)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 5)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="5-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[19:32:40]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">田中さん、トイレへの移動時にふらつきあり。付き添い対応中。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '5-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '5-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '5-1')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="5-2">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[19:35:22]</span>
                         <span class="record-sub-device">[2001]</span>
                         <span class="record-sub-text">トイレ対応完了。見守り強化で対応します。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '5-2')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '5-2')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '5-2')" title="削除">🗑</button>
                       </div>
@@ -1603,6 +1659,7 @@
 
                 <div class="record-group" data-group="6" data-period="night">
                   <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 6)">
+                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                     <span class="record-group-chevron">▼</span>
                     <div class="record-group-content">
                       <span class="record-item-time">[21:15:00]</span>
@@ -1610,29 +1667,34 @@
                       102号室 鈴木太郎さん 就寝前の血圧測定アラートです。
                     </div>
                     <div class="record-group-actions">
+                      <button class="record-action-btn is-add" onclick="addRecordAfter(event, 6)" title="追加">＋</button>
                       <button class="record-action-btn" onclick="editRecordGroup(event, 6)" title="編集">✎</button>
                       <button class="record-action-btn is-danger" onclick="deleteRecordGroup(event, 6)" title="削除">🗑</button>
                     </div>
                   </div>
                   <div class="record-group-body">
                     <div class="record-sub-item" data-sub-id="6-1">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[21:18:30]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">血圧測定完了。上138/下88で朝より改善しています。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '6-1')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '6-1')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '6-1')" title="削除">🗑</button>
                       </div>
                     </div>
                     <div class="record-sub-item" data-sub-id="6-2">
+                      <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
                       <div class="record-sub-content">
                         <span class="record-sub-time">[21:20:15]</span>
                         <span class="record-sub-device">[2002]</span>
                         <span class="record-sub-text">本日の記録完了。明日も引き続き経過観察します。</span>
                       </div>
                       <div class="record-sub-actions">
+                        <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '6-2')" title="追加">＋</button>
                         <button class="record-action-btn" onclick="editSubRecord(event, '6-2')" title="編集">✎</button>
                         <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '6-2')" title="削除">🗑</button>
                       </div>
@@ -1647,7 +1709,7 @@
           <div class="minutes-column">
             <div class="summary-panel">
               <div class="panel-header">
-                <span class="panel-title">申し送り記録</span>
+                <span class="panel-title">AI要約</span>
                 <div class="panel-header-actions">
                   <div class="time-period-tabs">
                     <button class="time-period-tab" onclick="filterByPeriod('morning')">朝</button>
@@ -1674,7 +1736,8 @@
 ・鈴木太郎さん（102号室）：就寝前血圧138/88で朝より改善。明日も経過観察継続。</textarea>
               </div>
               <div class="panel-footer">
-                <button class="btn btn-sm btn-outline" onclick="regenerateSummary()">要約を再生成</button>
+                <button class="btn btn-sm btn-outline" onclick="regenerateSummary()">再生成</button>
+                <button class="btn btn-sm btn-outline" onclick="createNewSummary()">新規要約</button>
                 <div style="flex: 1;"></div>
                 <button class="btn btn-sm btn-outline">ダウンロード</button>
                 <button class="btn btn-sm btn-primary">保存</button>
@@ -2064,6 +2127,14 @@
       textarea.value = summaries[period] || summaries.all;
     }
 
+    // Transcript Toggle
+    function toggleTranscript() {
+      const toggle = document.getElementById('transcriptToggle');
+      toggle.classList.toggle('is-on');
+      const isOn = toggle.classList.contains('is-on');
+      console.log(`Transcript ${isOn ? 'ON' : 'OFF'}`);
+    }
+
     // Dictionary Toggle
     function toggleDict() {
       const toggle = document.getElementById('dictToggle');
@@ -2238,9 +2309,98 @@
 
       setTimeout(() => {
         btn.disabled = false;
-        btn.textContent = '要約を再生成';
+        btn.textContent = '再生成';
         console.log('Summary regenerated');
       }, 1500);
+    }
+
+    // Create New Summary from checked items
+    function createNewSummary() {
+      const checkedItems = document.querySelectorAll('.record-checkbox:checked');
+      if (checkedItems.length === 0) {
+        alert('要約に含める記録データを選択してください。');
+        return;
+      }
+
+      console.log(`Creating new summary from ${checkedItems.length} selected items`);
+      // TODO: Collect selected items and generate summary
+      alert(`${checkedItems.length}件の記録データから新規要約を作成します。`);
+    }
+
+    // Add new sub-record to the group (as first child)
+    function addRecordAfter(event, groupId) {
+      event.stopPropagation();
+      const newId = `new-${Date.now()}`;
+      const now = new Date();
+      const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+
+      const newSubItem = document.createElement('div');
+      newSubItem.className = 'record-sub-item';
+      newSubItem.dataset.subId = newId;
+      newSubItem.innerHTML = `
+        <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
+        <div class="record-sub-content">
+          <span class="record-sub-time">${timeStr}</span>
+          <span class="record-sub-device">[----]</span>
+          <span class="record-sub-text">新規記録を入力してください</span>
+        </div>
+        <div class="record-sub-actions">
+          <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '${newId}')" title="追加">＋</button>
+          <button class="record-action-btn" onclick="editSubRecord(event, '${newId}')" title="編集">✎</button>
+          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '${newId}')" title="削除">🗑</button>
+        </div>
+      `;
+
+      const currentGroup = document.querySelector(`.record-group[data-group="${groupId}"]`);
+      if (currentGroup) {
+        const groupBody = currentGroup.querySelector('.record-group-body');
+        if (groupBody) {
+          // Add as first child
+          if (groupBody.firstChild) {
+            groupBody.insertBefore(newSubItem, groupBody.firstChild);
+          } else {
+            groupBody.appendChild(newSubItem);
+          }
+          // Expand group if collapsed
+          currentGroup.classList.remove('is-collapsed');
+        }
+      }
+
+      console.log(`Added new sub-record to group ${groupId}`);
+    }
+
+    // Add new sub-record after specified sub-item
+    function addSubRecordAfter(event, subId) {
+      event.stopPropagation();
+      const newId = `new-${Date.now()}`;
+      const now = new Date();
+      const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+
+      const newSubItem = document.createElement('div');
+      newSubItem.className = 'record-sub-item';
+      newSubItem.dataset.subId = newId;
+      newSubItem.innerHTML = `
+        <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
+        <div class="record-sub-content">
+          <span class="record-sub-time">${timeStr}</span>
+          <span class="record-sub-device">[----]</span>
+          <span class="record-sub-text">新規記録を入力してください</span>
+        </div>
+        <div class="record-sub-actions">
+          <button class="record-action-btn is-add" onclick="addSubRecordAfter(event, '${newId}')" title="追加">＋</button>
+          <button class="record-action-btn" onclick="editSubRecord(event, '${newId}')" title="編集">✎</button>
+          <button class="record-action-btn is-danger" onclick="deleteSubRecord(event, '${newId}')" title="削除">🗑</button>
+        </div>
+      `;
+
+      const currentSubItem = document.querySelector(`.record-sub-item[data-sub-id="${subId}"]`);
+      if (currentSubItem && currentSubItem.nextSibling) {
+        currentSubItem.parentNode.insertBefore(newSubItem, currentSubItem.nextSibling);
+      } else if (currentSubItem) {
+        currentSubItem.parentNode.appendChild(newSubItem);
+      }
+
+      console.log(`Added new sub-record after ${subId}`);
     }
 
     // Initialize on page load

@@ -9,7 +9,7 @@
     /* Call Page Layout */
     .call-page {
       min-height: 100vh;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background: #ffffff;
       display: flex;
       flex-direction: column;
     }
@@ -20,19 +20,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid var(--border);
+      gap: var(--space-sm);
     }
 
     .call-info {
       display: flex;
       align-items: center;
       gap: var(--space-md);
+      flex: 1;
     }
 
     .call-group-name {
       font-size: var(--text-xl);
       font-weight: 600;
-      color: white;
+      color: var(--text);
     }
 
     .call-status {
@@ -59,7 +61,7 @@
     .call-timer {
       font-size: var(--text-lg);
       font-weight: 600;
-      color: white;
+      color: var(--text);
       font-variant-numeric: tabular-nums;
     }
 
@@ -82,8 +84,8 @@
 
     /* Participant Card */
     .participant-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: var(--space-lg);
       display: flex;
@@ -107,7 +109,7 @@
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+      background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -120,7 +122,7 @@
     .participant-avatar svg.avatar-person {
       width: 50px;
       height: 50px;
-      color: rgba(255,255,255,0.85);
+      color: var(--text-secondary);
     }
 
     .participant-card.is-speaking .participant-avatar {
@@ -137,8 +139,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #1a1a2e;
-      border: 2px solid #16213e;
+      background: var(--surface);
+      border: 2px solid var(--border);
       z-index: 10;
     }
 
@@ -161,7 +163,7 @@
 
     .participant-id {
       font-size: var(--text-xs);
-      color: rgba(255,255,255,0.5);
+      color: var(--text-secondary);
     }
 
     .participant-status {
@@ -187,8 +189,8 @@
       align-items: center;
       justify-content: center;
       gap: var(--space-md);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.2);
+      border-top: 1px solid var(--border);
+      background: var(--surface-alt);
     }
 
     .control-btn {
@@ -201,12 +203,12 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
-      background: rgba(255,255,255,0.1);
-      color: white;
+      background: var(--surface);
+      color: var(--text-secondary);
     }
 
     .control-btn:hover {
-      background: rgba(255,255,255,0.2);
+      background: var(--surface-alt);
       transform: scale(1.05);
     }
 
@@ -252,7 +254,7 @@
 
     .control-label {
       font-size: 16px;
-      color: rgba(255,255,255,0.6);
+      color: var(--text-secondary);
       text-align: center;
       margin-top: 6px;
     }
@@ -278,12 +280,85 @@
     .participant-card.is-speaking .participant-avatar {
       animation: speaking 1s ease-in-out infinite;
     }
+
+    /* Minimize Button */
+    .btn-minimize {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-minimize:hover {
+      background: var(--surface-alt);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-minimize svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* 小窓モード */
+    .call-page.is-minimized {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 320px;
+      min-height: auto;
+      height: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .call-page.is-minimized .participants-area {
+      display: none;
+    }
+
+    .call-page.is-minimized .call-controls {
+      padding: var(--space-sm);
+      gap: var(--space-sm);
+    }
+
+    .call-page.is-minimized .control-label {
+      display: none;
+    }
+
+    .call-page.is-minimized .control-btn {
+      width: 44px;
+      height: 44px;
+    }
+
+    .call-page.is-minimized .control-btn-end {
+      width: 56px;
+      height: 44px;
+      margin-left: var(--space-sm);
+    }
+
+    .call-page.is-minimized .btn-minimize svg {
+      transform: rotate(180deg);
+    }
   </style>
 </head>
 <body>
   <div class="call-page">
     <!-- Call Header -->
     <header class="call-header">
+      <button class="btn-minimize" id="btn-minimize" title="小窓モード">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
       <div class="call-info">
         <div class="call-group-name">グループ1</div>
         <div class="call-status">
@@ -446,6 +521,13 @@
         }
       }
     }, 1000);
+
+    // Minimize - go to sip-groups with floating window
+    const btnMinimize = document.getElementById('btn-minimize');
+
+    btnMinimize.addEventListener('click', function() {
+      location.href = 'sip-groups.html?call=active';
+    });
 
     // Mute toggle
     const btnMute = document.getElementById('btn-mute');
