@@ -973,22 +973,6 @@
       border-left: 3px solid var(--primary);
     }
 
-    .record-group-chevron {
-      color: var(--text-muted);
-      font-size: 12px;
-      margin-top: 3px;
-      transition: transform 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .record-group.is-collapsed .record-group-chevron {
-      transform: rotate(-90deg);
-    }
-
-    .record-group.is-collapsed .record-group-body {
-      display: none;
-    }
-
     .record-group-content {
       flex: 1;
       font-size: var(--text-sm);
@@ -1418,9 +1402,8 @@
               <div class="source-panel-body" id="recordList">
                 <!-- 朝のアシストコール -->
                 <div class="record-group" data-group="1" data-period="morning">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 1)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[07:15:22]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1463,9 +1446,8 @@
                 </div>
 
                 <div class="record-group" data-group="2" data-period="morning">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 2)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[08:45:10]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1496,9 +1478,8 @@
 
                 <!-- 昼のアシストコール -->
                 <div class="record-group is-selected" data-group="3" data-period="noon">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 3)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[12:30:45]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1541,9 +1522,8 @@
                 </div>
 
                 <div class="record-group" data-group="4" data-period="noon">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 4)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[15:45:57]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1613,9 +1593,8 @@
 
                 <!-- 夜のアシストコール -->
                 <div class="record-group" data-group="5" data-period="night">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 5)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[19:30:15]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1658,9 +1637,8 @@
                 </div>
 
                 <div class="record-group" data-group="6" data-period="night">
-                  <div class="record-group-header" onclick="toggleRecordGroup(event, this.parentElement, 6)">
-                    <input type="checkbox" class="record-checkbox" onclick="event.stopPropagation()">
-                    <span class="record-group-chevron">▼</span>
+                  <div class="record-group-header">
+                    <input type="checkbox" class="record-checkbox">
                     <div class="record-group-content">
                       <span class="record-item-time">[21:15:00]</span>
                       <span class="record-item-device">[3001]</span>
@@ -1736,8 +1714,7 @@
 ・鈴木太郎さん（102号室）：就寝前血圧138/88で朝より改善。明日も経過観察継続。</textarea>
               </div>
               <div class="panel-footer">
-                <button class="btn btn-sm btn-outline" onclick="regenerateSummary()">再生成</button>
-                <button class="btn btn-sm btn-outline" onclick="createNewSummary()">新規要約</button>
+                <button class="btn btn-sm btn-outline" onclick="generateSummary()">要約生成</button>
                 <div style="flex: 1;"></div>
                 <button class="btn btn-sm btn-outline">ダウンロード</button>
                 <button class="btn btn-sm btn-primary">保存</button>
@@ -2043,25 +2020,24 @@
       }
     });
 
+    // Event delegation for parent-child checkbox propagation
+    document.getElementById('recordList').addEventListener('change', function(e) {
+      if (e.target.classList.contains('record-checkbox')) {
+        const recordGroup = e.target.closest('.record-group');
+        const recordSubItem = e.target.closest('.record-sub-item');
+
+        // If checkbox is in record-group-header (parent), propagate to children
+        if (recordGroup && !recordSubItem) {
+          const isChecked = e.target.checked;
+          const childCheckboxes = recordGroup.querySelectorAll('.record-group-body .record-checkbox');
+          childCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+          });
+        }
+      }
+    });
+
     // Current period filter
-    let currentPeriod = 'all';
-
-    // Toggle Record Group (collapse/expand)
-    function toggleRecordGroup(event, el, groupId) {
-      // Don't toggle if clicking action buttons
-      if (event.target.closest('.record-action-btn')) return;
-
-      el.classList.toggle('is-collapsed');
-
-      // Select the group
-      document.querySelectorAll('.record-group').forEach(g => g.classList.remove('is-selected'));
-      el.classList.add('is-selected');
-
-      // Update right panel
-      updateSummaryForGroup(groupId);
-    }
-
-    // Filter by time period
     function filterByPeriod(period) {
       currentPeriod = period;
 
@@ -2301,30 +2277,17 @@
       }
     }
 
-    // Regenerate Summary
-    function regenerateSummary() {
+    // Generate Summary
+    function generateSummary() {
       const btn = event.target;
       btn.disabled = true;
       btn.textContent = '生成中...';
 
       setTimeout(() => {
         btn.disabled = false;
-        btn.textContent = '再生成';
-        console.log('Summary regenerated');
+        btn.textContent = '要約生成';
+        console.log('Summary generated');
       }, 1500);
-    }
-
-    // Create New Summary from checked items
-    function createNewSummary() {
-      const checkedItems = document.querySelectorAll('.record-checkbox:checked');
-      if (checkedItems.length === 0) {
-        alert('要約に含める記録データを選択してください。');
-        return;
-      }
-
-      console.log(`Creating new summary from ${checkedItems.length} selected items`);
-      // TODO: Collect selected items and generate summary
-      alert(`${checkedItems.length}件の記録データから新規要約を作成します。`);
     }
 
     // Add new sub-record to the group (as first child)
@@ -2361,8 +2324,6 @@
           } else {
             groupBody.appendChild(newSubItem);
           }
-          // Expand group if collapsed
-          currentGroup.classList.remove('is-collapsed');
         }
       }
 
